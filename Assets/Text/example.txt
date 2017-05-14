@@ -1,0 +1,4 @@
+﻿Lucifer : J'aime les hommes.
+Azazel : Moi non.
+Lucifer : C'est pas gentil.
+Azazel : Je n'ai que faire de ton opinion ma chère Lucifer. Ce text est trop long mais c'est un example volontaire pour tester certain cas de dialogue ou de text vraiment trop long.
