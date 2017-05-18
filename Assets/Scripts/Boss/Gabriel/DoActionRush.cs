@@ -13,61 +13,35 @@ namespace Assets.Scripts.Boss.Gabriel
     {
         public float chargeRush;
         private float startChargeRush;
-        private bool isRushing = false;
-        private float _minDistance = 0.5f;
+        public float _minDistance;
         private int _rushNumber = 0;
         public int _rushMax = 6;
         public float speed;
+        private Vector3 endPos;
 
-        delegate void LauchAction();
-        private LauchAction DoAction;
-
-        protected void Start()
+        public override void OnStart()
         {
-            startChargeRush = chargeRush;
-            SetModeCharge();
+            startChargeRush = CustomTimer.instance.elapsedTime;
+            endPos = Player.instance.transform.position + Vector3.up;
         }
 
-        protected void Update()
+        public override TaskStatus OnUpdate()
         {
-            DoAction();
-        }
-
-        private void DoActionCharge()
-        {
-            chargeRush -= Time.deltaTime;
-            Debug.Log("charge : " + chargeRush);
-            if (chargeRush <= 0.0f)
+            if (CustomTimer.instance.isTime(startChargeRush, chargeRush))
             {
-                chargeRush = startChargeRush;
-                _rushNumber++;
-                SetModeRush();
+                transform.LookAt(Player.instance.transform);
+                Vector3 startPos = transform.position;
+                
+                transform.position = Vector3.MoveTowards(transform.position, endPos, Time.deltaTime * speed);
+
+                if (Vector3.Distance(transform.position, endPos) < _minDistance && _rushNumber < _rushMax)
+                {
+                    return TaskStatus.Success;
+                }
+                else return TaskStatus.Running;
             }
+            else return TaskStatus.Running;
         }
-
-        private void SetModeRush()
-        {
-            DoAction = DoActionRushOnPlayer;
-        }
-
-        private void SetModeCharge()
-        {
-            DoAction = DoActionCharge;
-        }
-
-        private void DoActionRushOnPlayer()
-        {
-            Vector3 startPos = transform.position;
-            Vector3 endPos = Player.instance.transform.position;
-            
-            transform.position = Vector3.MoveTowards(startPos, endPos, Time.deltaTime * speed);
-
-            if (Vector3.Distance(transform.position,endPos) < _minDistance && _rushNumber < _rushMax)
-            {
-                Debug.Log("charge");
-                SetModeCharge();
-            }
-           
-        }
+        
     }
 }

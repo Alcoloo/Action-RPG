@@ -23,7 +23,7 @@ public class HealthRotation : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         transform.LookAt(cam);
-	}
+    }
 
     public void changeLife(float pPercentLife)
     {

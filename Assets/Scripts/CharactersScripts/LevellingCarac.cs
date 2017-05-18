@@ -25,11 +25,11 @@ namespace Rpg.Characters
         }
         void OnDisable()
         {
-            LevellingManager.manager.gainExp(_expToEarn);
+            LevellingManager.manager.GainExp(_expToEarn);
         }
         void OnDestroyed()
         {
-            LevellingManager.manager.gainExp(_expToEarn);
+            LevellingManager.manager.GainExp(_expToEarn);
         }
     }
 }

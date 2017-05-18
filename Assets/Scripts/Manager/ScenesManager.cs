@@ -2,22 +2,29 @@
 using System;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using Rpg;
 
-namespace Assets.Scripts.Manager
+namespace Rpg
 {
 
     /// <summary>
     /// 
     /// </summary>
-    public class ScenesManager : MonoBehaviour
+    public class ScenesManager : BaseManager<ScenesManager>
     {
 
         private static ScenesManager _instance;
 
         private AsyncOperation async = null;
 
-        public Texture2D emptyProgressBar;
-        public Texture2D fullProgressBar;
+        private GameObject loadingCanvas;
+        public Image loadingBar;
+        public Text loadingTxt;
+
+        private float progress;
+
+        public string[] sceneOrder;
 
         /// <summary>
         /// instance unique de la classe     
@@ -30,14 +37,16 @@ namespace Assets.Scripts.Manager
             }
         }
 
-        protected void Awake()
+        protected override void Awake()
         {
-            if (_instance != null)
-            {
-                throw new Exception("Tentative de création d'une autre instance de SceneManager alors que c'est un singleton.");
-            }
-            _instance = this;
-            DontDestroyOnLoad(transform.gameObject);
+            base.Awake();
+            loadingCanvas = transform.Find("CanvasLoading").gameObject;
+
+        }
+
+        protected override IEnumerator CoroutineStart()
+        {
+            throw new NotImplementedException();
         }
 
         protected void Start()
@@ -47,32 +56,43 @@ namespace Assets.Scripts.Manager
 
         protected void Update()
         {
-            OnGUI();
+
+        }
+
+        public void changeScene()
+        {
+            LoadNextScene(getNextScene(SceneManager.GetActiveScene().name));
         }
 
         public void LoadNextScene(string pSceneName)
         {
+            loadingCanvas.SetActive(true);
             StartCoroutine(LoadALevel(pSceneName));
         }
 
         private IEnumerator LoadALevel(string pSceneName)
         {
             async = SceneManager.LoadSceneAsync(pSceneName);
-            yield return async;
-        }
-
-        protected void OnDestroy()
-        {
-            _instance = null;
-        }
-
-        void OnGUI()
-        {
-            if (async != null)
+            while(!async.isDone)
             {
-                GUI.DrawTexture(new Rect(0, 0, 100, 50), emptyProgressBar);
-                GUI.DrawTexture(new Rect(0, 0, 100 * async.progress, 50), fullProgressBar);
+                progress = Mathf.Clamp01(async.progress / 0.9f);
+                loadingBar.fillAmount = progress;
+                loadingTxt.text = "Loading: " + (progress * 100) + "%";
+                yield return null;  
             }
+            loadingCanvas.SetActive(false);
+        }
+
+        private string getNextScene(string pCurrentScene)
+        {
+            for(int i = 0; i < sceneOrder.Length; i++)
+            {
+                if(pCurrentScene == sceneOrder[i])
+                {
+                    if (sceneOrder[i + 1] != "") return sceneOrder[i + 1];
+                }
+            }
+            return "";
         }
     }
 }

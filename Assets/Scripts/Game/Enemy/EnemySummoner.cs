@@ -3,6 +3,7 @@ using Rpg.Controller;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Rpg;
 
 public class EnemySummoner : Enemy {
 
@@ -36,7 +37,7 @@ public class EnemySummoner : Enemy {
 
     protected void SetModeSummon()
     {
-        EnemyManager.instance.startSpawners();
+        EnemyManager.manager.startSpawners();
         DoAction = DoActionSummon;
     }
 
@@ -60,7 +61,7 @@ public class EnemySummoner : Enemy {
         {
             createShoot();
         }
-        if (counter >= 1000 && EnemyManager.instance.getPopCornCount() < 5) ;
+        if (counter >= 1000 && EnemyManager.manager.getPopCornCount() < 5) ;
     }
 
     protected void SetModeFear()

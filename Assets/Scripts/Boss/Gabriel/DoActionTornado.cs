@@ -1,6 +1,8 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
+using Rpg;
 using System.Collections;
 using UnityEngine;
+using Rpg;
 
 namespace Assets.Scripts.Boss.Gabriel
 {
@@ -19,22 +21,28 @@ namespace Assets.Scripts.Boss.Gabriel
             startChargeWings = chargeWings;
         }
 
-        protected void Update()
+        public override void OnStart()
         {
-            chargeWings -= Time.deltaTime;
-            Debug.Log("charge : " + chargeWings);
-            if (chargeWings <= 0.0f)
+            startChargeWings = CustomTimer.instance.elapsedTime;
+        }
+
+        public override TaskStatus OnUpdate()
+        {
+            if (CustomTimer.instance.isTime(startChargeWings, chargeWings))
             {
+                transform.LookAt(Player.instance.transform);
                 CreateTornado();
-                chargeWings = startChargeWings;
+                return TaskStatus.Success;
             }
+            else return TaskStatus.Running;
         }
         
         private void CreateTornado()
         {
             GameObject tornadoPrefab = PoolingManager.instance.getFromPool("Tornado");
+            tornadoPrefab.SetActive(true);
             tornadoPrefab.transform.SetParent(gameObject.transform, false);
-            tornadoPrefab.transform.position = gameObject.transform.position;
+            tornadoPrefab.transform.position = gameObject.transform.position + Vector3.forward;
         }
     }
 }

@@ -37,9 +37,6 @@
 
         IEnumerator Start()
         {
-            while (!MenuManager.manager && MenuManager.manager.isReady)
-                yield return null;
-
             isReady = true;
 
             Menu();

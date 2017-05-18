@@ -1,11 +1,13 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
+using Rpg;
+using Rpg.Characters;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Boss.Gabriel
 {
-   
+    
     /// <summary>
     /// 
     /// </summary>
@@ -13,37 +15,20 @@ namespace Assets.Scripts.Boss.Gabriel
     {
         public float angle;
         public float radius;
+        public int _damage;
 
-        
-
-        protected void Start()
+        public override TaskStatus OnUpdate()
         {
-            float t;
-            for (int i = 0; i < 10; i++)
+            Vector3 directionToTarget = (Player.instance.transform.position - transform.position).normalized;
+            float distanceToTarget = Vector3.Distance(transform.position, Player.instance.transform.position);
+            if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2 && distanceToTarget < radius)
             {
-                t = i / (10 - 1);
-                LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
-                lineRenderer.SetPosition(i, GetQuadraticCoordinates(t));
+                Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                return TaskStatus.Success;
             }
+            else return TaskStatus.Success;
         }
 
-        void OnGUI()
-        {
-            Debug.Log("go");
-            Handles.color = new Color(1, 0, 0, 1);
-            Handles.DrawSolidArc(transform.position, Vector3.up, Vector3.right, angle, radius);
-            Handles.DrawSolidArc(transform.position, Vector3.up, Vector3.right, -angle, radius);
-            Handles.color = Color.black;
-        }
 
-        Vector3 GetQuadraticCoordinates(float t)
-        {
-            return Mathf.Pow(1-t,2)*Vector3.right + 2*t*(1-t)*Vector3.up + Mathf.Pow(t,2)*Vector3.left;
-        }
-
-    protected void Update()
-        {
-
-        }
     }
 }

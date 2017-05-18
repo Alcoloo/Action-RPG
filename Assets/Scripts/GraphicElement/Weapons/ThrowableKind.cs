@@ -32,7 +32,7 @@ namespace Rpg.GraphicElement.Weapons
         public override void DoAction()
         {
             base.DoAction();
-            transform.position += transform.forward * _bulletSpeed;
+            transform.position = Vector3.MoveTowards(transform.position,EnemyManager.instance.ennemyNear[0].transform.position,_bulletSpeed);
         }
         public void initialise(WeaponController wc, string tag)
         {

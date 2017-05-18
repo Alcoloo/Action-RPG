@@ -1,4 +1,5 @@
 ﻿using Rpg.GraphicElement.Weapons;
+using Rpg.Manager;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,7 +23,15 @@ namespace Rpg.Controller
 
         public Weapon leftHand;
         public Weapon rightHand;
-        
+
+        public BaseGameEvent weaponHit;
+
+
+        protected override void AwakeController()
+        {
+            base.AwakeController();
+            weaponHit = new BaseGameEvent();
+        }
         protected override void InitController()
         {
             base.InitController();
@@ -48,6 +57,11 @@ namespace Rpg.Controller
                 leftHand.ActivateAttack(state);
                 rightHand.ActivateAttack(state);
             }
+        }
+
+        public void IncreaseCombo()
+        {
+            weaponHit.Invoke();
         }
 
 
