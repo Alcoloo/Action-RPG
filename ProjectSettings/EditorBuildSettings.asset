@@ -5,5 +5,17 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Invector-3rdPersonController/Basic Locomotion LITE/3rdPersonController-Demo.unity
+  - enabled: 1
+    path: Assets/Scenes/GameFlow/Intro.unity
+  - enabled: 1
+    path: Assets/Scenes/GameFlow/Zone1.unity
+  - enabled: 1
+    path: Assets/Scenes/GameFlow/Zone2.unity
+  - enabled: 1
+    path: Assets/Scenes/GameFlow/Gabriel.unity
+  - enabled: 1
+    path: Assets/Scenes/GameFlow/Zone3.unity
+  - enabled: 1
+    path: Assets/Scenes/GameFlow/ZoneBossDieu_final.unity

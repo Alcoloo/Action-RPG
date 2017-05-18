@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections;
 
-namespace Assets.Scripts.Utils.Timer
+namespace Rpg
 {
 
     /// <summary>
     /// 
     /// </summary>
-    public class CustomTimer : MonoBehaviour
+    public class CustomTimer : BaseManager<CustomTimer>
     {
 
         private static CustomTimer _instance;
@@ -30,13 +31,15 @@ namespace Assets.Scripts.Utils.Timer
             }
         }
 
-        protected void Awake()
+        protected override void Awake()
         {
-            if (_instance != null)
-            {
-                throw new Exception("Tentative de création d'une autre instance de CustomTimer alors que c'est un singleton.");
-            }
-            _instance = this;
+            base.Awake();
+
+        }
+
+        protected override IEnumerator CoroutineStart()
+        {
+            throw new NotImplementedException();
         }
 
 
@@ -70,11 +73,6 @@ namespace Assets.Scripts.Utils.Timer
         public void startTimer()
         {
             isPaused = false;
-        }
-
-        protected void OnDestroy()
-        {
-            _instance = null;
         }
     }
 }

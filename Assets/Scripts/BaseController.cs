@@ -8,7 +8,10 @@ namespace Rpg
     /// </summary>
     public class BaseController : MonoBehaviour
     {
-
+        protected void Awaken()
+        {
+            AwakeController();
+        }
         protected void Start()
         {
             InitController();
@@ -25,6 +28,10 @@ namespace Rpg
         }
 
         protected virtual void DoAcTion()
+        {
+
+        }
+        protected virtual void AwakeController()
         {
 
         }

@@ -1,5 +1,6 @@
 ﻿using BehaviorDesigner.Runtime.Tasks;
 using Rpg;
+using Rpg.Characters;
 using UnityEngine;
 
 namespace Assets.Scripts.Boss.Gabriel
@@ -10,53 +11,59 @@ namespace Assets.Scripts.Boss.Gabriel
     /// </summary>
     public class DoActionCharge : Action
     {
-        delegate void LaunchAction();
-        private LaunchAction DoAction;
-
-        public float chargePowerTime;
+        public float chargePowerTime;      
         public float speed;
+        public float _minDistance;
+        public float _shieldLife;
+        public int _damage;
 
-        protected void Start()
+        private bool hasReleasedPower;
+        private float startPowerTime;
+        private float startHP;
+        private float currentHP;
+        private Caracteristic cara;
+
+        public override void OnStart()
         {
-            SetModeChargePower();
+            startPowerTime = CustomTimer.instance.elapsedTime;
+            hasReleasedPower = false;
+            cara = GetComponent<Caracteristic>();
+            startHP = cara.pv;
+            currentHP = startHP;
         }
 
-        protected void Update()
+        public override TaskStatus OnUpdate()
         {
-            DoAction();
+            currentHP = cara.pv;
+            if(!hasReleasedPower)
+            {
+                if (CustomTimer.instance.isTime(startPowerTime, chargePowerTime))
+                {
+                    Debug.Log("released Power");
+                    Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.CINEMATIC;
+                    Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                    hasReleasedPower = true;
+                    return TaskStatus.Running;
+                }
+                else if (currentHP <= startHP - _shieldLife)
+                {
+                    Debug.Log("stop charge");
+                    return TaskStatus.Success;
+                }
+                else return TaskStatus.Running;
+            }
+            else
+            {
+                transform.position = Vector3.MoveTowards(transform.position, Player.instance.transform.position + Vector3.up, Time.deltaTime * speed);
+                if (Vector3.Distance(transform.position, Player.instance.transform.position) <= _minDistance)
+                {
+                    Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.DEFAULT;
+                    return TaskStatus.Success;
+                }
+                else return TaskStatus.Running;
+            }
+            
         }
-
-        private void SetModeChargePower()
-        {
-            DoAction = DoActionChargePower;
-        }
-
-        private void SetModeReleasePower()
-        {
-            DoAction = DoActionReleasePower;
-        }
-
-        private void SetModeRush()
-        {
-            DoAction = DoActionRush;
-        }
-
-        private void DoActionChargePower()
-        {
-            chargePowerTime -= Time.deltaTime;
-            Debug.Log("charge : " + chargePowerTime);
-            if (chargePowerTime <= 0.0f) SetModeReleasePower();
-        }
-
-        private void DoActionReleasePower()
-        {
-            Debug.Log("ENCULE ET ETOURDIT LE JOUEUR");
-            SetModeRush();
-        }
-
-        private void DoActionRush()
-        {
-            transform.position = Vector3.MoveTowards(transform.position, Player.instance.transform.position - Vector3.forward, Time.deltaTime * speed);
-        }
+        
     }
 }

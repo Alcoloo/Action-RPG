@@ -95,6 +95,9 @@ MonoBehaviour:
   _align: 0
   hand: 0
   _weaponController: {fileID: 0}
+  _unavailableTag: 
   bulletTemplate: {fileID: 1672555982810128, guid: ba07bfd760614ed4d9dd21365c4548f3,
     type: 2}
   transformToInstantiate: {fileID: 0}
+  radiusDetect: 120
+  viewAngle: 50

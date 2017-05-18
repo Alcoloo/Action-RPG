@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using Rpg;
 
 namespace Assets.Scripts.Boss.Gabriel
 {
@@ -11,28 +12,22 @@ namespace Assets.Scripts.Boss.Gabriel
     public class Tornado : MonoBehaviour
     {
         public float speed;
-        
-        
+        public float destructionTime;
+
+        private float startDestructionTime;
 
         protected void Start()
         {
-            StartCoroutine(MoveForward());
+            startDestructionTime = CustomTimer.manager.elapsedTime;
         }
 
         protected void Update()
         {
-            
-            
+            transform.Translate(Vector3.forward * speed);
+            if (CustomTimer.manager.isTime(startDestructionTime, destructionTime)) gameObject.SetActive(false);
         }
 
-        IEnumerator MoveForward()
-        {
-            while(gameObject != null)
-            {
-                transform.Translate(Vector3.forward * speed);
-                Destroy(gameObject, 3.0f);
-                yield return null;
-            }
-        }
+        
+        
     }
 }

@@ -63,7 +63,9 @@ public class RPGCharacterController : MonoBehaviour
 	bool isJumping = false;
 	[HideInInspector]
 	public bool isGrounded;
-	public float jumpSpeed = 12;
+    [HideInInspector]
+    public float jumpSpeed = 12;
+    public float maxJumpSpeed = 12;
 	public float doublejumpSpeed = 12;
 	bool doJump = false;
 	bool doublejumping = true;
@@ -76,8 +78,10 @@ public class RPGCharacterController : MonoBehaviour
 	bool startFall;
 	float fallingVelocity = -1f;
 
-	// Used for continuing momentum while in air
-	public float inAirSpeed = 8f;
+    // Used for continuing momentum while in air
+    [HideInInspector]
+    public float inAirSpeed = 8f;
+    public float maxInAirSpeed = 10f;
 	float maxVelocity = 2f;
 	float minVelocity = -2f;
 
@@ -242,8 +246,6 @@ public class RPGCharacterController : MonoBehaviour
         {
             dh = inputHorizontal;
             dv = inputVertical ;
-            Debug.Log("dh: " + dh);
-            Debug.Log("dv: " + dv);
         }
 		if(!isRolling && !isAiming)
 		{
@@ -267,7 +269,17 @@ public class RPGCharacterController : MonoBehaviour
 			}
 			if(inputCastL)
 			{
-				doJump = true;
+                if (!doJump && isGrounded)
+                {
+                    /*Debug.Log(inputVec.sqrMagnitude);*/
+                    float coef = Mathf.Sqrt(Mathf.Pow(inputHorizontal, 2) + Mathf.Pow(inputVertical, 2));
+                    if (coef > 1) coef = 1;
+                    if (coef < 0.2f) coef = 0.2f; 
+                    doJump = true;
+                    inAirSpeed = coef * maxInAirSpeed;
+                    if (coef < 0.75f) coef = 0.75f;
+                    jumpSpeed = coef * maxJumpSpeed;
+                }
 			} 
 			else
 			{
@@ -664,11 +676,11 @@ public class RPGCharacterController : MonoBehaviour
 			capCollider.radius = 0.5f;
 		}
 		//If leaving a ladder
-		else if(collide.transform.parent.name.Contains("Ladder"))
-		{
-			isNearLadder = false;
-			ladder = null;
-		}
+		//else if(collide.transform.parent.name.Contains("Ladder"))
+		//{
+		//	isNearLadder = false;
+		//	ladder = null;
+		//}
 	}
 
 	void WaterControl()

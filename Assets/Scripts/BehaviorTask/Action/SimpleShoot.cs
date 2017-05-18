@@ -1,7 +1,7 @@
 using UnityEngine;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
-using Assets.Scripts.Utils.Timer;
+using Rpg;
 
 public class SimpleShoot : Action
 {

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using BehaviorDesigner.Runtime.Tasks;
+using Rpg;
+using Rpg.Characters;
+using UnityEngine;
 
 namespace Assets.Scripts.Boss.Gabriel
 {
@@ -6,52 +9,40 @@ namespace Assets.Scripts.Boss.Gabriel
     /// <summary>
     /// 
     /// </summary>
-    public class DoActionFly : MonoBehaviour
+    public class DoActionFly : Action
     {
         public float speed;
         public float chargePower;
+        public int _damage;
+        public float _shieldLife;
+
         private float startChargePower;
+        private float startYPosition;
+        private Caracteristic cara;
+        private float currentHP;
+        private float startHP;
 
-        delegate void LaunchAction();
-        private LaunchAction DoAction;
-
-        protected void Start()
+        public override void OnStart()
         {
-            startChargePower = chargePower;
-            SetModFlyAndCharge();
+            startChargePower = CustomTimer.instance.elapsedTime;
+            startYPosition = transform.position.y;
+            cara = GetComponent<Caracteristic>();
+            startHP = cara.pv;
+            currentHP = startHP;
         }
 
-        protected void Update()
+        public override TaskStatus OnUpdate()
         {
-            DoAction();
-        }
-
-        private void SetModFlyAndCharge()
-        {
-            DoAction = DoActionFlyAndCharge;
-        }
-
-        private void SetModeReleasePower()
-        {
-            DoAction = DoActionReleasePower;
-        }
-
-        private void DoActionFlyAndCharge()
-        {
+            currentHP = cara.pv;
             transform.Translate(Vector3.up * speed);
-
-            chargePower -= Time.deltaTime;
-            Debug.Log("charge : " + chargePower);
-            if (chargePower <= 0.0f)
+            if (CustomTimer.instance.isTime(startChargePower, chargePower))
             {
-                chargePower = startChargePower;
-                SetModeReleasePower();
+                if (currentHP >= startHP - _shieldLife) Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                transform.position = new Vector3(transform.position.x, startYPosition, transform.position.z);
+                return TaskStatus.Success;
             }
+            else return TaskStatus.Running;
         }
-
-        private void DoActionReleasePower()
-        {
-            Debug.Log("ECNULE LE JOUEUR !");
-        }
+        
     }
 }

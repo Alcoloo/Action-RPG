@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using Assets.Scripts.Manager;
+using Rpg;
 
 public class IntroManager : MonoBehaviour {
     
@@ -20,7 +22,13 @@ public class IntroManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         switchTimer -= Time.deltaTime;
-        if(switchTimer <= 0.0f && isCinematiqueOver() && !isSwitching)
+        if (isCinematiqueOver())
+        {
+            Debug.Log("go");
+            StopCoroutine(SetNextOneActive());
+            ScenesManager.manager.changeScene();
+        }
+        if (switchTimer <= 0.0f && !isSwitching)
         {
             isSwitching = true;
             StartCoroutine(SetNextOneActive());
@@ -38,11 +46,11 @@ public class IntroManager : MonoBehaviour {
     IEnumerator SetNextOneActive()
     {
         introArray[currentCinematiqueIndex].GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false);
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(0.5f);
 
         introArray[currentCinematiqueIndex].SetActive(false);
         introArray[++currentCinematiqueIndex].GetComponent<Image>().CrossFadeAlpha(1.0f, 2.5f, false);
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(0.5f);
 
         switchTimer = 2.0f;
         isSwitching = false;
@@ -52,7 +60,7 @@ public class IntroManager : MonoBehaviour {
 
     private bool isCinematiqueOver()
     {
-        if (currentCinematiqueIndex == introArray.Length -1) return false;
-        else return true;
+        if (currentCinematiqueIndex == introArray.Length -1) return true;
+        else return false;
     }
 }

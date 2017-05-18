@@ -26,7 +26,7 @@ namespace Rpg.Controller
             
         }
         
-        public void gainExp(int expToEarn)
+        public void GainExp(int expToEarn)
         {
             Debug.Log(name + " earn " + expToEarn + " exp");
             currentExp += expToEarn;

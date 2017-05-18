@@ -65,7 +65,7 @@ namespace Rpg.Characters
                 isDeath.Invoke();
                 return;
             }
-            isHit.Invoke(_pv,_maxPv);
+            //isHit.Invoke(_pv,_maxPv);
         } 
 
         public void Heal(int healPoint)

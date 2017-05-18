@@ -1,5 +1,5 @@
 ﻿using Assets.Scripts.CharactersScripts;
-using Assets.Scripts.Utils.Timer;
+using Rpg;
 using Rpg.Characters;
 using Rpg.Controller;
 using System;
@@ -126,25 +126,25 @@ public class Enemy : MonoBehaviour {
     {
         nav.Stop();
         myMesh.material.color = Color.black;
-        startTime = CustomTimer.instance.elapsedTime;
+        startTime = CustomTimer.manager.elapsedTime;
         DoAction = DoActionBasicAttack;
     }
 
     protected void DoActionBasicAttack()
     {
-        if (CustomTimer.instance.isTime(startTime, hurtDuration)) SetModeChargePlayer();
+        if (CustomTimer.manager.isTime(startTime, hurtDuration)) SetModeChargePlayer();
     }
 
     protected virtual void SetModeHurt()
     {
-        startTime = CustomTimer.instance.elapsedTime;
+        startTime = CustomTimer.manager.elapsedTime;
         myMesh.material.color = Color.yellow;
         DoAction = DoActionHurt;
     }
 
     protected virtual void DoActionHurt()
     {
-        if (CustomTimer.instance.isTime(startTime, hurtDuration)) SetModeChargePlayer();
+        if (CustomTimer.manager.isTime(startTime, hurtDuration)) SetModeChargePlayer();
     }
 
     protected void SetModeDie() { DoAction = DoActionDie; }

@@ -14,7 +14,6 @@ namespace Assets.Scripts.Game
         public TextAsset textZone1;
 
         public GameObject[] pathCams;
-        public GameObject paradiseDoor;
         private int currentStep = 0;
 
         void Awake()
@@ -24,7 +23,6 @@ namespace Assets.Scripts.Game
 
         void Start()
         {
-            //paradiseDoor.GetComponent<ParadiseDoor>().onPlayerEnter.AddListener(LaunchEnterParadise);
         }
 
         // Update is called once per frame

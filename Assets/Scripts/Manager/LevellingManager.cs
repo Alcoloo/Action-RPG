@@ -15,6 +15,9 @@ namespace Rpg.Manager
         [SerializeField]
         private LevelController _levelController;
         [SerializeField]
+        private WeaponController _weaponController;
+
+        [SerializeField]
         private float _comboMultiplierUnit = 0.1f;
         [SerializeField]
         private float _maxComboMultiplier = 2.0f;
@@ -23,7 +26,8 @@ namespace Rpg.Manager
 
         protected void Start()
         {
-            StartCoroutine(expCorroutine());
+            //StartCoroutine(expCorroutine());
+            _weaponController.weaponHit.AddListener(AddComboMultiplier);
         }
 
         protected void Update()
@@ -32,7 +36,7 @@ namespace Rpg.Manager
         }
         protected IEnumerator expCorroutine()
         {
-            _levelController.gainExp(10);
+            _levelController.GainExp(10);
             yield return new WaitForSeconds(1.0f);
             StartCoroutine(expCorroutine());
         }
@@ -45,15 +49,17 @@ namespace Rpg.Manager
         {
             _comboMultiplier = 1.0f;
         }
-        public void setComboMultiplier()
+        public void AddComboMultiplier()
         {
             _comboMultiplier += _comboMultiplierUnit;
             if (_comboMultiplier > _maxComboMultiplier) _comboMultiplier = _maxComboMultiplier;
+            Debug.Log(_comboMultiplier);
         }
-        public void gainExp(int expToEarn)
+        public void GainExp(int expToEarn)
         {
             Debug.Log("here");
-            _levelController.gainExp((int)(expToEarn * _comboMultiplier));
+            _levelController.GainExp((int)(expToEarn * _comboMultiplier));
+            resetComboMultiplier();
         }
     }
 }

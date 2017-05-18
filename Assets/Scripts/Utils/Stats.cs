@@ -14,27 +14,35 @@ namespace Rpg
         public const int hpFirstStep = 50;
         public const int hpSecondStep = 100;
 
-        public const float atkSpeedFirstFactor = 1.1f;
-        public const float atkSpeedSecondFactor = 1.15f;
+        public const int armorFirstStep = 10;
+        public const int armorSecondStep = 15;
 
-        private List<float> statsStep = new List<float>();
+        private List<float> atkStep = new List<float>();
+        private List<float> hpStep = new List<float>();
+        private List<float> armorStep = new List<float>();
+
+        private Dictionary<string, List<float>> statsStep = new Dictionary<string, List<float>>();
 
         public void InitStats()
         {
-            statsStep.Add(atkFirstStep);
-            statsStep.Add(atkSecondStep);
+            atkStep.Add(atkFirstStep);
+            atkStep.Add(atkSecondStep);
 
-            statsStep.Add(hpFirstStep);
-            statsStep.Add(hpSecondStep);
+            hpStep.Add(hpFirstStep);
+            hpStep.Add(hpSecondStep);
 
-            statsStep.Add(atkSpeedFirstFactor);
-            statsStep.Add(atkSpeedSecondFactor);
+            armorStep.Add(armorFirstStep);
+            armorStep.Add(armorSecondStep);
+
+            statsStep.Add("AtkUpgrade", atkStep);
+            statsStep.Add("HPUpgrade", hpStep);
+            statsStep.Add("ArmorUpgrade", armorStep);
 
         }
 
-        public float GetBasicStatsStep(int index)
+        public float GetBasicStatsStep(string upgrade, int index)
         {
-            return statsStep[index];
+            return statsStep[upgrade][index];
         } 
 
     }

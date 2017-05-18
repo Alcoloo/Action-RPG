@@ -33,8 +33,8 @@ namespace Rpg
 
         protected void Start()
         {
-            gameObject.AddComponent<SwordKind>();
-            currentWeapon = gameObject.GetComponent<Weapon>();
+            //gameObject.AddComponent<SwordKind>();
+            //currentWeapon = gameObject.GetComponent<Weapon>();
         }
 
         protected void Update()
