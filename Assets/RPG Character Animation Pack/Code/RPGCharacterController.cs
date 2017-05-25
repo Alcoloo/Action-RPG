@@ -241,7 +241,7 @@ public class RPGCharacterController : MonoBehaviour
 		Vector3 right = new Vector3(forward.z, 0, -forward.x);
         //directional inputs
         //dv = 0;//inputDashVertical;
-               //dh = inputDashHorizontal;
+        //dh = inputDashHorizontal;
         if (inputLightHit)
         {
             dh = inputHorizontal;
@@ -306,20 +306,13 @@ public class RPGCharacterController : MonoBehaviour
                 if(currentKind != KIND.demonic)
                 {
                     // animationSpeed = 1000; 
-                    StartCoroutine(_DoubleWeapon());
+                    //StartCoroutine(_DoubleWeapon());
+                    Sword();
                 }
-                else if (weapon != Weapon.UNARMED )
+                if (weapon != Weapon.UNARMED )
                 {
-                    if (_attackLeft)
-                    {
                         Attack(m_combo.Combo("X"));
                         _attackLeft = !_attackLeft;
-                    }
-                    else
-                    {
-                        Attack(m_combo.Combo("X"));
-                        _attackLeft = !_attackLeft;
-                    }
                 }	
 			}
             if (inputCastR && canAction && isGrounded && !isBlocking)
@@ -327,21 +320,11 @@ public class RPGCharacterController : MonoBehaviour
                 if (currentKind != KIND.angelic)
                 {
                     //animationSpeed = 1000;
-                    SwitchWeaponTwoHand(0);
+                    //SwitchWeaponTwoHand(0);
+                    Bow();
                 }
-                else if (weapon != Weapon.UNARMED )
-                {
-                    if (_attackLeft)
-                    {
-                        Attack(m_combo.Combo("B"));
-                        _attackLeft = !_attackLeft;
-                    }
-                    else
-                    {
-                        Attack(m_combo.Combo("B"));
-                        _attackLeft = !_attackLeft;
-                    }
-                }
+                Attack(m_combo.Combo("B"));
+                _attackLeft = !_attackLeft;
             }
           /*  if (inputSwitchUpDown < -0.1f && canAction && !isBlocking && isGrounded)
 			{  
@@ -857,11 +840,13 @@ public class RPGCharacterController : MonoBehaviour
 	{
 		if(!isGrounded)
 		{
-			Vector3 motion = inputVec;
+            bool inputAttackL = Input.GetButtonDown("AttackL");
+            bool inputCastR = Input.GetButtonDown("CastR");
+            Vector3 motion = inputVec;
 			motion *= (Mathf.Abs(inputVec.x) == 1 && Mathf.Abs(inputVec.z) == 1) ? 0.7f:1;
 			rb.AddForce(motion * inAirSpeed, ForceMode.Acceleration);
-			//limit the amount of velocity we can achieve
-			float velocityX = 0;
+            //limit the amount of velocity we can achieve
+            float velocityX = 0;
 			float velocityZ = 0;
 			if(rb.velocity.x > maxVelocity)
 			{
@@ -880,7 +865,7 @@ public class RPGCharacterController : MonoBehaviour
 					velocityX = 0;
 				}
 				rb.AddForce(new Vector3(-velocityX, 0, 0), ForceMode.Acceleration);
-			}
+            }
 			if(rb.velocity.z > maxVelocity)
 			{
 				velocityZ = rb.velocity.z - maxVelocity;
@@ -889,7 +874,7 @@ public class RPGCharacterController : MonoBehaviour
 					velocityZ = 0;
 				}
 				rb.AddForce(new Vector3(0, 0, -velocityZ), ForceMode.Acceleration);
-			}
+            }
 			if(rb.velocity.z < minVelocity)
 			{
 				velocityZ = rb.velocity.z - minVelocity;
@@ -898,8 +883,37 @@ public class RPGCharacterController : MonoBehaviour
 					velocityZ = 0;
 				}
 				rb.AddForce(new Vector3(0, 0, -velocityZ), ForceMode.Acceleration);
-			}
-		}
+            }
+
+            if (inputAttackL)
+            {
+
+                if (currentKind != KIND.demonic)
+                {
+                    // animationSpeed = 1000; 
+                    //StartCoroutine(_DoubleWeapon());
+                    Sword();
+                }
+                else if (weapon != Weapon.UNARMED)
+                {
+                    JumpAttack(m_combo.Combo("X"));
+                    _attackLeft = !_attackLeft;
+                }
+            }
+            if (inputCastR)
+            {
+                if (currentKind != KIND.angelic)
+                {
+                    //animationSpeed = 1000;
+                    Bow();
+                }
+                if (weapon != Weapon.UNARMED)
+                {
+                    JumpAttack(m_combo.Combo("B"));
+                    _attackLeft = !_attackLeft;
+                }
+            }
+        }
 	}
 
 	#endregion
@@ -920,6 +934,38 @@ public class RPGCharacterController : MonoBehaviour
 		canMove = true;
 		isClimbing = false;
 	}
+
+    private void Bow()
+    {
+        currentKind = KIND.angelic;
+        leftWeapon = 4;
+        animator.SetInteger("LeftRight", 3);
+        animator.SetInteger("Weapon", 4);
+        animator.SetInteger("LeftWeapon", 0);
+        animator.SetInteger("RightWeapon", 0);
+        animator.SetBool("Armed", true);
+        animator.SetTrigger("WeaponUnsheathTrigger");
+        weapon = Weapon.TWOHANDBOW;
+        twoHandBow.SetActive(true);
+        swordL.SetActive(false);
+        swordR.SetActive(false);
+    }
+
+    private void Sword()
+    {
+        currentKind = KIND.demonic;
+        leftWeapon = 8;
+        rightWeapon = 9;
+        animator.SetInteger("LeftRight", 3);
+        animator.SetInteger("Weapon", 7);
+        animator.SetInteger("LeftWeapon", leftWeapon);
+        animator.SetInteger("RightWeapon", rightWeapon);
+        animator.SetBool("Armed", true);
+        weapon = Weapon.ARMED;
+        twoHandBow.SetActive(false);
+        swordL.SetActive(true);
+        swordR.SetActive(true);
+    }
 
 	//0 = No side
 	//1 = Left
@@ -946,6 +992,32 @@ public class RPGCharacterController : MonoBehaviour
 	//weaponNumber 18 = Rifle
 	//weaponNumber 19 == Right Spear
 	//weaponNumber 20 == 2H Club
+
+    public void JumpAttack(Attack lAttack)
+    {
+        int attackSide = lAttack.side;
+        int attackNumber = lAttack.number;
+        rb.velocity = new Vector3(rb.velocity.x, 1.2f, rb.velocity.z);
+        animator.SetTrigger("JumpAttack" + attackNumber + "Trigger");
+        if (weapon == Weapon.ARMED)
+        {
+            if (attackSide != 3)
+            {
+                
+                StartCoroutine(_LockMovementAndAttack(0, 0.1f));
+                if (attackSide == 1) StartCoroutine(ActivateAttack(0.1f, HANDKIND.left));
+                else if (attackSide == 2) StartCoroutine(ActivateAttack(0.1f, HANDKIND.right));
+            }
+        }
+        else
+        {
+            StartCoroutine(_LockMovementAndAttack(0, 0.75f));
+            StartCoroutine(ShootCorou(0.5f));
+        }
+            
+       
+    }
+
 	public void Attack(Attack lAttack)
 	{
         int attackSide = lAttack.side;
@@ -959,9 +1031,9 @@ public class RPGCharacterController : MonoBehaviour
 					if(attackSide != 3)
 					{
 						animator.SetTrigger("Attack" + (attackNumber).ToString() + "Trigger");
-						StartCoroutine(_LockMovementAndAttack(0, 0.6f));
-                        if (attackSide == 1) StartCoroutine(ActivateAttack(0.6f, HANDKIND.left));
-                        else if (attackSide == 2) StartCoroutine(ActivateAttack(0.6f, HANDKIND.right));
+						StartCoroutine(_LockMovementAndAttack(0, 0.4f));
+                        if (attackSide == 1) StartCoroutine(ActivateAttack(0.4f, HANDKIND.left));
+                        else if (attackSide == 2) StartCoroutine(ActivateAttack(0.4f, HANDKIND.right));
 					}
 					else
 					{
@@ -1254,22 +1326,27 @@ public class RPGCharacterController : MonoBehaviour
 	//method to keep character from moveing while attacking, etc
 	public IEnumerator _LockMovementAndAttack(float delayTime, float lockTime)
 	{
+        Debug.Log("LOCK");
 		yield return new WaitForSeconds(delayTime);
-		canAction = false;
-		canMove = false;
-		animator.SetBool("Moving", false);
-		rb.velocity = Vector3.zero;
-		rb.angularVelocity = Vector3.zero;
-		inputVec = new Vector3(0, 0, 0);
-		animator.applyRootMotion = true;
+		
+        if (isGrounded)
+        {
+            canAction = false;
+            canMove = false;
+            animator.SetBool("Moving", false);
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            inputVec = new Vector3(0, 0, 0);
+            animator.applyRootMotion = true;
+        }
 		yield return new WaitForSeconds(lockTime / animationSpeed);
-		canAction = true;
+        canAction = true;
 		canMove = true;
 		animator.applyRootMotion = false;
 	}
 
-	//for controller weapon switching
-	void SwitchWeaponTwoHand(int upDown)
+    //for controller weapon switching
+    void SwitchWeaponTwoHand(int upDown)
 	{
         currentKind = KIND.angelic;
 		canAction = false;
@@ -1511,7 +1588,7 @@ public class RPGCharacterController : MonoBehaviour
 		    if(weaponNumber == 4)
 			{
 				weapon = Weapon.TWOHANDBOW;
-				StartCoroutine(_WeaponVisibility(weaponNumber, 0.55f / animationSpeed, true));
+                StartCoroutine(_WeaponVisibility(weaponNumber, 0.55f / animationSpeed, true));
 			}
 			
 		}
