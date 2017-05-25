@@ -20,12 +20,6 @@
 
         }
 
-        protected override IEnumerator CoroutineStart()
-        {
-            isReady = true;
-            yield return null;
-        }
-
         //Apparition des bouttons de niveau et disparition du bouton Start
         protected override void Play()
         {

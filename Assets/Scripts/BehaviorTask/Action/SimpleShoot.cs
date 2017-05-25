@@ -25,12 +25,12 @@ public class SimpleShoot : Action
             enemyScript.lookPlayer();
             enemyScript.createShoot();
             isShooting = true;
-            startTime = CustomTimer.instance.elapsedTime;
+            startTime = CustomTimer.manager.elapsedTime;
             return TaskStatus.Running;
         }
         else
         {
-            if (CustomTimer.instance.isTime(startTime, fireRate))
+            if (CustomTimer.manager.isTime(startTime, fireRate))
             {
                 isShooting = false;
                 return TaskStatus.Success;

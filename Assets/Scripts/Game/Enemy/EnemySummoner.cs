@@ -14,7 +14,7 @@ public class EnemySummoner : Enemy {
 	void Start () {
         tree = GetComponent<BehaviorTree>();
         weapon = GetComponent<WeaponController>();
-        init();
+        Init();
         SetModePatrol();
 	}
 

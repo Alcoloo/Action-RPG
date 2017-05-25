@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using Rpg;
+using Rpg.Controller;
+using Rpg.Manager;
 
 namespace Rpg
 {
@@ -12,6 +14,8 @@ namespace Rpg
         private float startingKarma = 50;
         public float currentKarma;
 
+        private WeaponController wp;
+
         void Awake()
         {
             
@@ -20,6 +24,7 @@ namespace Rpg
         protected void Start()
         {
             currentKarma = startingKarma;
+            if (ComboManager.manager != null) ComboManager.manager.weaponHit.AddListener(ChangeKarmaValue);
         }
 
         protected void Update()
@@ -27,11 +32,11 @@ namespace Rpg
 
         }
 
-        public float ChangeKarmaValue()
+        public void ChangeKarmaValue()
         {
-            /*if (Player.instance.GetWeapon().GetAlign() == KIND.demonic) currentKarma--;
-            else currentKarma++;*/
-            return currentKarma;
+            if (Player.instance.GetComponent<WeaponController>().leftHand != null) currentKarma--;
+            else currentKarma++;
+            Player.instance.ChangeKarmaValue(currentKarma);
         }
     }
 }

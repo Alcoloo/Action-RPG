@@ -59,7 +59,6 @@
         public void IsDamage(int damageReceived)
         {
             currentHealth -= damageReceived;
-            Player.instance.ChangeHealthValue(currentHealth);
 
             if (currentHealth == 0 && !isDead)
             {

@@ -16,7 +16,7 @@ namespace Rpg
     /// </summary>
     public abstract class Weapon : MonoBehaviour
     {
-      
+        public int currentEnnemyAimedIndex;
         [SerializeField]
         protected string _weaponAsset;
         [SerializeField]
@@ -27,6 +27,8 @@ namespace Rpg
         protected WeaponController _weaponController;
         [SerializeField]
         protected string _unavailableTag;
+        [SerializeField]
+        protected int _attack = 10;
 
         protected bool _isAttack = false;
         public string weaponAsset

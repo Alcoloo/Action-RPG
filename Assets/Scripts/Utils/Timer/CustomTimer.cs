@@ -37,11 +37,6 @@ namespace Rpg
 
         }
 
-        protected override IEnumerator CoroutineStart()
-        {
-            throw new NotImplementedException();
-        }
-
 
 
         protected void Start()

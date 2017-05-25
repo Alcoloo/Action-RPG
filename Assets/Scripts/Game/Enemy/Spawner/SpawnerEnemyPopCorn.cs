@@ -33,12 +33,12 @@ public class SpawnerEnemyPopCorn : MonoBehaviour {
         while(numberSpawned <= maxEnemySpawn)
         {
             numberSpawned++;
-            bool lIsLead = numberSpawned == 1 ? true : false;
+            bool lIsLead = numberSpawned == 0 ? true : false;
             SpawnEnemy(lIsLead);
             yield return new WaitForSeconds(0.2f);
         }
         //test 
-        EnemyManager.instance.testBehavior();
+        EnemyManager.manager.testBehavior();
         numberSpawned = 0;
     }
 

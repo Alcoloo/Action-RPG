@@ -39,11 +39,7 @@ namespace Rpg
             initPool();
 
         }
-
-        protected override IEnumerator CoroutineStart()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         /// <summary>
         /// initalise la pool, paramètrer les cas particuliers en fonction du nombre d'objets
@@ -127,6 +123,17 @@ namespace Rpg
                 }
             }
             return null;
+        }
+
+        public void resetPool()
+        {
+            foreach (KeyValuePair<string, List<GameObject>> entry in pool)
+            {
+                for(int i = 0; i < entry.Value.Count; i++)
+                {
+                    if (entry.Value[i].activeInHierarchy) entry.Value[i].SetActive(false);
+                }
+            }
         }
         #endregion
     }

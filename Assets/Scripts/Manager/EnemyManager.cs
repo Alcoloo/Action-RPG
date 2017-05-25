@@ -35,11 +35,7 @@ namespace Rpg
         {
             base.Awake();
         }
-
-        protected override IEnumerator CoroutineStart()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         void Start()
         {
@@ -52,11 +48,16 @@ namespace Rpg
         private void InitEnemy(string pName, Vector3 pPosition, bool isLead)
         {
             GameObject lEnemy = PoolingManager.manager.getFromPool(pName);
-            lEnemy.SetActive(true);
             lEnemy.transform.position = pPosition;
-            if (isLead) popCornLead = lEnemy;
+            lEnemy.SetActive(true);
             lEnemy.GetComponent<BehaviorTree>().EnableBehavior();
-            lEnemy.GetComponent<Enemy>().init();
+            if (isLead)
+            {
+                popCornLead = lEnemy;
+               // lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
+            }
+            lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
+            lEnemy.GetComponent<Enemy>().Init();
             //Debug.Log(lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().
             pushEnemy(lEnemy);
         }
@@ -65,8 +66,13 @@ namespace Rpg
         {
             foreach (GameObject lEnemy in enemies["EnemyPopCorn"])
             {
-                if (popCornLead != null) lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().leader = popCornLead;
-                lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
+                lEnemy.GetComponent<BehaviorTree>().EnableBehavior();
+                if (popCornLead != null)
+                {
+                    lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
+
+                    if (lEnemy != popCornLead) lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().leader = popCornLead;
+                }
             }
         }
         #endregion

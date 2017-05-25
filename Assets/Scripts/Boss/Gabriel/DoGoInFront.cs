@@ -21,7 +21,7 @@ namespace Assets.Scripts.Boss.Gabriel
         public override void OnStart()
         {
             playerTransform = Player.instance.transform;
-            startMovingTime = CustomTimer.instance.elapsedTime;
+            startMovingTime = CustomTimer.manager.elapsedTime;
         }
 
         public override TaskStatus OnUpdate()
@@ -34,7 +34,7 @@ namespace Assets.Scripts.Boss.Gabriel
                 weaponGO.AddComponent<DoActionThrow>();
                 return TaskStatus.Success;
             }
-            else if (CustomTimer.instance.isTime(startMovingTime, _movingTime)) return TaskStatus.Success;
+            else if (CustomTimer.manager.isTime(startMovingTime, _movingTime)) return TaskStatus.Success;
             else return TaskStatus.Running;
         }
     }

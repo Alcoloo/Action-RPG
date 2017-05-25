@@ -24,7 +24,7 @@ namespace Assets.Scripts.Boss.Gabriel
 
         public override void OnStart()
         {
-            startChargePower = CustomTimer.instance.elapsedTime;
+            startChargePower = CustomTimer.manager.elapsedTime;
             startYPosition = transform.position.y;
             cara = GetComponent<Caracteristic>();
             startHP = cara.pv;
@@ -35,7 +35,7 @@ namespace Assets.Scripts.Boss.Gabriel
         {
             currentHP = cara.pv;
             transform.Translate(Vector3.up * speed);
-            if (CustomTimer.instance.isTime(startChargePower, chargePower))
+            if (CustomTimer.manager.isTime(startChargePower, chargePower))
             {
                 if (currentHP >= startHP - _shieldLife) Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
                 transform.position = new Vector3(transform.position.x, startYPosition, transform.position.z);

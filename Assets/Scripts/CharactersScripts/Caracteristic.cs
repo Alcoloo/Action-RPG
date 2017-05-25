@@ -114,12 +114,7 @@ namespace Rpg.Characters
         {
             /// mettre une potentielle formule de calcul des caracteristiques si on part sur d'autre type de carcterstiques ^^  
         }
-        IEnumerator CotoDamage()
-        {
-            yield return new WaitForSeconds(2.0f);
-            TakeDamage(1,KIND.angelic);
-            StartCoroutine(CotoDamage());
-        }
+
         public void setAlign(KIND pAlign)
         {
             align = pAlign;

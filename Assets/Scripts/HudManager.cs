@@ -5,6 +5,9 @@
     using System;
     using Rpg;
     using System.Collections;
+    using Assets.Scripts.Boss.Gabriel;
+    using Characters;
+    using Manager;
 
     /// <summary>
     /// 
@@ -14,35 +17,31 @@
         //Sliders
         public Slider healthSlider;
         public Slider karmaSlider;
+        public Slider bossSlider;
+        public Text comboText;
+        public Text moneyNumberTxt;
+        public GameObject HudPanel;
 
-        private static HudManager _instance;
+        private int _moneyFactor;
+        
 
         /// <summary>
         /// instance unique de la classe     
         /// </summary>
-        public static HudManager instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
 
         protected override void Awake()
         {
-            if (_instance != null)
-            {
-                throw new Exception("Tentative de création d'une autre instance de HudManager alors que c'est un singleton.");
-            }
-            _instance = this;
+            base.Awake();
 
-            if (Player.instance != null) Player.instance.OnAttack.AddListener(ChangeKarmaValue);
-            if (Player.instance != null) Player.instance.OnDamaged.AddListener(ChangeLifeValue);
         }
 
         protected void Start()
         {
+            if (Player.instance != null) Player.instance.OnAttack.AddListener(ChangeKarmaValue);
+            if (Player.instance != null) Player.instance.OnDamaged.AddListener(ChangeLifeValue);
 
+            if (Gabriel.instance != null) Gabriel.instance.GetComponent<Caracteristic>().isHit.AddListener(ChangeBossLifeValue);
+            if (ComboManager.manager != null) ComboManager.manager.weaponHit.AddListener(IncreaseComboNumber);
         }
 
         protected void Update()
@@ -50,24 +49,39 @@
 
         }
 
-        protected override IEnumerator CoroutineStart()
+        public void OnComboFinish(int comboNumber)
         {
-            throw new NotImplementedException();
+            int moneyNumber = comboNumber * _moneyFactor;
+            moneyNumberTxt.text = moneyNumber.ToString();
         }
 
-        public void ChangeKarmaValue(float karmaValue)
+        private void IncreaseComboNumber()
+        {
+            int comboNumber = ComboManager.manager.GetComboNumber();
+            comboText.text = comboNumber.ToString();
+        }
+
+        private void ChangeBossLifeValue(int pv, int _maxPv)
+        {
+            bossSlider.value = pv;
+        }
+        
+
+        private void ChangeKarmaValue(float karmaValue)
         {
             karmaSlider.value = karmaValue;
         }
 
-        public void ChangeLifeValue(float healthValue)
+        private void ChangeLifeValue(float healthValue)
         {
             healthSlider.value = healthValue;
         }
 
-        protected override void OnDestroy()
+        public void ChangeHUDVisibility()
         {
-            _instance = null;
+            Debug.Log(HudPanel.activeSelf);
+            HudPanel.SetActive(!HudPanel.activeSelf);
         }
+        
     }
 }

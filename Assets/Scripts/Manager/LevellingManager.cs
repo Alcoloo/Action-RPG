@@ -27,7 +27,7 @@ namespace Rpg.Manager
         protected void Start()
         {
             //StartCoroutine(expCorroutine());
-            _weaponController.weaponHit.AddListener(AddComboMultiplier);
+            if(ComboManager.manager != null) ComboManager.manager.weaponHit.AddListener(AddComboMultiplier);
         }
 
         protected void Update()
@@ -39,11 +39,6 @@ namespace Rpg.Manager
             _levelController.GainExp(10);
             yield return new WaitForSeconds(1.0f);
             StartCoroutine(expCorroutine());
-        }
-        protected override IEnumerator CoroutineStart()
-        {
-            throw new NotImplementedException();
-
         }
         public void resetComboMultiplier()
         {

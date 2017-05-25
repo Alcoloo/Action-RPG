@@ -23,12 +23,12 @@ namespace Assets.Scripts.Boss.Gabriel
 
         public override void OnStart()
         {
-            startChargeWings = CustomTimer.instance.elapsedTime;
+            startChargeWings = CustomTimer.manager.elapsedTime;
         }
 
         public override TaskStatus OnUpdate()
         {
-            if (CustomTimer.instance.isTime(startChargeWings, chargeWings))
+            if (CustomTimer.manager.isTime(startChargeWings, chargeWings))
             {
                 transform.LookAt(Player.instance.transform);
                 CreateTornado();
@@ -39,7 +39,7 @@ namespace Assets.Scripts.Boss.Gabriel
         
         private void CreateTornado()
         {
-            GameObject tornadoPrefab = PoolingManager.instance.getFromPool("Tornado");
+            GameObject tornadoPrefab = PoolingManager.manager.getFromPool("Tornado");
             tornadoPrefab.SetActive(true);
             tornadoPrefab.transform.SetParent(gameObject.transform, false);
             tornadoPrefab.transform.position = gameObject.transform.position + Vector3.forward;

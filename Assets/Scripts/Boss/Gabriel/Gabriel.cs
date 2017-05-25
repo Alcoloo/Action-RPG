@@ -2,6 +2,7 @@
 using System;
 using Rpg.Characters;
 using Rpg;
+using Assets.Scripts.Game;
 
 namespace Assets.Scripts.Boss.Gabriel
 {
@@ -37,18 +38,22 @@ namespace Assets.Scripts.Boss.Gabriel
 
             hasBeenhit = false;
             cara = GetComponent<Caracteristic>();
+            
         }
 
         protected void Start()
         {
             if (cara.isDeath != null) cara.isDeath.AddListener(DestroyBoss);
+
+            HudManager.manager.bossSlider.maxValue = cara.pv;
+            HudManager.manager.bossSlider.value = cara.pv;
         }
         
 
         private void DestroyBoss()
         {
-            Destroy(gameObject);
-            ScenesManager.instance.changeScene();
+            CinematicManager.instance.LaunchCinematic();
+            //ScenesManager.instance.changeScene();
         }  
         
         protected void OnCollisionEnter(Collision col)

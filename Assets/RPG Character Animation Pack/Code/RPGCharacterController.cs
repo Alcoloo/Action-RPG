@@ -6,9 +6,9 @@ using Rpg;
 using Rpg.Manager;
 using Rpg.Controller;
 using Assets.Scripts.Game;
+using Assets.Scripts.Boss.Gabriel;
 
-public enum Weapon 
-{
+public enum Weapon {
 	UNARMED = 0,
 	TWOHANDSWORD = 1,
 	TWOHANDSPEAR = 2,
@@ -32,11 +32,11 @@ public enum RPGCharacterState
 	SWIMMING,
     CINEMATIC
 }
-	
+
 public class RPGCharacterController : MonoBehaviour 
 {
-	#region Variables
 
+	#region Variables
     private ComboManager m_combo= new ComboManager();
     private static RPGCharacterController _instance;
     public static RPGCharacterController instance { get { return _instance; } }
@@ -53,7 +53,6 @@ public class RPGCharacterController : MonoBehaviour
 	public Vector3 waistRotationOffset;
 	public RPGCharacterState rpgCharacterState = RPGCharacterState.DEFAULT;
     private ThirdPersonOrbitCam camScript;         // Reference to the third person camera script.
-
     //jumping variables
     public float gravity = -9.8f;
 	[HideInInspector]
@@ -68,28 +67,23 @@ public class RPGCharacterController : MonoBehaviour
     public float maxJumpSpeed = 12;
 	public float doublejumpSpeed = 12;
 	bool doJump = false;
-	bool doublejumping = true;
 	[HideInInspector]
 	public bool canDoubleJump = false;
 	[HideInInspector]
 	public bool isDoubleJumping = false;
-	bool doublejumped = false;
 	bool isFalling;
 	bool startFall;
 	float fallingVelocity = -1f;
-
     // Used for continuing momentum while in air
     [HideInInspector]
     public float inAirSpeed = 8f;
     public float maxInAirSpeed = 10f;
-	float maxVelocity = 2f;
-	float minVelocity = -2f;
-
+	public float maxVelocity = 2f;
+	public float minVelocity = -2f;
 	//rolling variables
 	public float rollSpeed = 8;
-	bool isRolling = false;
+	public bool isRolling = false;
 	public float rollduration;
-
 	//movement variables
 	[HideInInspector]
 	public bool isMoving = false;
@@ -99,14 +93,10 @@ public class RPGCharacterController : MonoBehaviour
 	float moveSpeed;
 	public float runSpeed = 6f;
 	float rotationSpeed = 40f;
-  
-	float x;
-	float z;
 	float dv;
 	float dh;
-	Vector3 inputVec;
+	public Vector3 inputVec;
 	Vector3 newVelocity;
-
 	//Weapon and Shield
 	public Weapon weapon;
 	[HideInInspector]
@@ -115,7 +105,6 @@ public class RPGCharacterController : MonoBehaviour
    public int leftWeapon = 0;
 	[HideInInspector]
 	public bool isRelax = false;
-
 	//isStrafing/action variables
 	[HideInInspector]
 	public bool canAction = true;
@@ -127,9 +116,7 @@ public class RPGCharacterController : MonoBehaviour
 	public float knockbackMultiplier = 1f;
 	bool isKnockback;
 	[HideInInspector]
-	public bool isSitting = false;
 	bool isAiming = false;
-	bool isClimbing = false;
 	[HideInInspector]
 	public bool isNearLadder = false;
 	[HideInInspector]
@@ -138,25 +125,14 @@ public class RPGCharacterController : MonoBehaviour
 	public GameObject ladder;
 	[HideInInspector]
 	public GameObject cliff;
-
 	//Swimming variables
 	public float inWaterSpeed = 8f;
-
 	//Weapon Models
-	
 	public GameObject twoHandBow;
-
 	public GameObject swordL;
 	public GameObject swordR;
-  
-
     private bool _attackLeft = false;
-
-    private Caracteristic carac;
-    private WeaponController weaponController; 
-
     public KIND currentKind;
-
     public float animationSpeed;
     #endregion
 
@@ -170,7 +146,6 @@ public class RPGCharacterController : MonoBehaviour
 		capCollider = GetComponent<CapsuleCollider>();
 		FXSplash = transform.GetChild(2).GetComponent<ParticleSystem>();
 		//hide all weapons
-		
 		if(twoHandBow != null)
 		{
 			twoHandBow.SetActive(false);
@@ -184,51 +159,20 @@ public class RPGCharacterController : MonoBehaviour
 			swordR.SetActive(false);
 		}
 	}
-
 	#endregion
+
 	void Start()
     {
         animator.speed = animationSpeed;
-        carac = GetComponent<Caracteristic>();
-        weaponController = GetComponent<WeaponController>();
-        if(carac == null)
-        {
-            gameObject.AddComponent<Caracteristic>();
-            carac = GetComponent<Caracteristic>();
-        }
-        if(weaponController == null)
-        {
-            gameObject.AddComponent<WeaponController>();
-            weaponController = GetComponent<WeaponController>();
-        }
-        m_combo.initCombo();
-        StartCoroutine(_DoubleWeapon());
-        carac.isDeath.AddListener(Death);
-        carac.isHit.AddListener(BeHit);
     }
+
 	#region UpdateAndInput
-	
 	void Update()
 	{
-
         animator.speed = animationSpeed;
         if (rpgCharacterState == RPGCharacterState.CINEMATIC) return;
 		//input abstraction for easier asset updates using outside control schemes
-		bool inputJump = Input.GetButtonDown("Jump");
-		bool inputLightHit = Input.GetButtonDown("LightHit");
-		bool inputDeath = Input.GetButtonDown("Death");
 		bool inputUnarmed = Input.GetButtonDown("Unarmed");
-		bool inputShield = Input.GetButtonDown("Shield");
-		bool inputAttackL = Input.GetButtonDown("AttackL");
-		bool inputAttackR = Input.GetButtonDown("AttackR");
-		bool inputCastL = Input.GetButtonDown("CastL");
-		bool inputCastR = Input.GetButtonDown("CastR");
-		float inputSwitchUpDown = Input.GetAxisRaw("SwitchUpDown");
-		float inputSwitchLeftRight = Input.GetAxisRaw("SwitchLeftRight");
-		bool inputStrafe = Input.GetKey(KeyCode.LeftShift);
-		float inputTargetBlock = Input.GetAxisRaw("TargetBlock");
-		float inputHorizontal = Input.GetAxisRaw("Horizontal");
-		float inputVertical = Input.GetAxisRaw("Vertical");
 		bool inputAiming = Input.GetButtonDown("Aiming");
 		//Camera relative movement
 		Transform cameraTransform = sceneCamera.transform;
@@ -240,256 +184,49 @@ public class RPGCharacterController : MonoBehaviour
 		//Right vector relative to the camera always orthogonal to the forward vector
 		Vector3 right = new Vector3(forward.z, 0, -forward.x);
         //directional inputs
-        //dv = 0;//inputDashVertical;
-               //dh = inputDashHorizontal;
-        if (inputLightHit)
+        if (ControllerInput.manager.dash)
         {
-            dh = inputHorizontal;
-            dv = inputVertical ;
+            dh = ControllerInput.manager.horizontal;
+            dv = ControllerInput.manager.vertical;
         }
 		if(!isRolling && !isAiming)
 		{
             if (dv == 0 && dh == 0) targetDashDirection = 0.5f * -transform.forward;
             else targetDashDirection = dh * right + dv * forward;
-          
 		}
-		x = inputHorizontal;
-		z = inputVertical;
-		inputVec = x * right + z * forward;
 		//make sure there is animator on character
 		if(animator)
 		{
-			if(canMove && !isBlocking && !isDead)
-			{
-
-			}
-			else
-			{
-				inputVec = new Vector3(0, 0, 0);
-			}
-			if(inputCastL)
-			{
-                if (!doJump && isGrounded)
-                {
-                    /*Debug.Log(inputVec.sqrMagnitude);*/
-                    float coef = Mathf.Sqrt(Mathf.Pow(inputHorizontal, 2) + Mathf.Pow(inputVertical, 2));
-                    if (coef > 1) coef = 1;
-                    if (coef < 0.2f) coef = 0.2f; 
-                    doJump = true;
-                    inAirSpeed = coef * maxInAirSpeed;
-                    if (coef < 0.75f) coef = 0.75f;
-                    jumpSpeed = coef * maxJumpSpeed;
-                }
-			} 
-			else
-			{
-				doJump = false;
-			}
-			if(rpgCharacterState != RPGCharacterState.SWIMMING)
-			{
-				Rolling();
-				Jumping();
-				Blocking();
-			}
+			if(!(canMove && !isBlocking && !isDead)) inputVec = new Vector3(0, 0, 0);
 			if(inputUnarmed && canAction && isGrounded && !isBlocking && weapon != Weapon.UNARMED)
 			{
 				StartCoroutine(_SwitchWeapon(0));
-			}
-			if(inputShield && canAction && isGrounded && !isBlocking && leftWeapon != 7)
-			{
-				StartCoroutine(_SwitchWeapon(7));
-			}
-
-			if(inputAttackL && canAction && isGrounded && !isBlocking)
-			{
-                
-                if(currentKind != KIND.demonic)
-                {
-                    // animationSpeed = 1000; 
-                    StartCoroutine(_DoubleWeapon());
-                }
-                else if (weapon != Weapon.UNARMED )
-                {
-                    if (_attackLeft)
-                    {
-                        Attack(m_combo.Combo("X"));
-                        _attackLeft = !_attackLeft;
-                    }
-                    else
-                    {
-                        Attack(m_combo.Combo("X"));
-                        _attackLeft = !_attackLeft;
-                    }
-                }	
-			}
-            if (inputCastR && canAction && isGrounded && !isBlocking)
-            {
-                if (currentKind != KIND.angelic)
-                {
-                    //animationSpeed = 1000;
-                    SwitchWeaponTwoHand(0);
-                }
-                else if (weapon != Weapon.UNARMED )
-                {
-                    if (_attackLeft)
-                    {
-                        Attack(m_combo.Combo("B"));
-                        _attackLeft = !_attackLeft;
-                    }
-                    else
-                    {
-                        Attack(m_combo.Combo("B"));
-                        _attackLeft = !_attackLeft;
-                    }
-                }
-            }
-          /*  if (inputSwitchUpDown < -0.1f && canAction && !isBlocking && isGrounded)
-			{  
-				SwitchWeaponTwoHand(0);
-			}
-			else if(inputSwitchUpDown > 0.1f && canAction && !isBlocking && isGrounded)
-			{  
-				SwitchWeaponTwoHand(1);
-			}
-			if(inputSwitchLeftRight < -0.1f && canAction && !isBlocking && isGrounded)
-			{
-                StartCoroutine(_DoubleWeapon());
-                //SwitchWeaponLeftRight(0);
-			}
-			else if(inputSwitchLeftRight > 0.1f && canAction && !isBlocking && isGrounded)
-			{
-                StartCoroutine(_DoubleWeapon());
-				//SwitchWeaponLeftRight(1);
-			}*/
-            //if strafing 
-            /*if(inputStrafe || inputTargetBlock > 0.1f && canAction && weapon != Weapon.RIFLE)
-			{  
-				isStrafing = true;
-				animator.SetBool("Strafing", true);
-				if(inputCastL && canAction && isGrounded && !isBlocking)
-				{
-					CastAttack(1);
-				}
-				if(inputCastR && canAction && isGrounded && !isBlocking)
-				{
-					CastAttack(2);
-				}
-			}
-			else
-			{  
-				isStrafing = false;
-				animator.SetBool("Strafing", false);
-			}*/
-            //Shooting
-            /*if (weapon == Weapon.RIFLE)
-			{
-				if(Input.GetMouseButtonDown(0))
-				{
-					animator.SetTrigger("Attack1Trigger");
-				}
-				if(Input.GetMouseButtonDown(2))
-				{
-					animator.SetTrigger("ReloadTrigger");
-				}
-				if(inputAiming)
-				{
-					if(!isAiming)
-					{
-						isAiming = true;
-						animator.SetBool("Aiming", true);
-					}
-					else
-					{
-						isAiming = false;
-						animator.SetBool("Aiming", false);
-					}
-				}
-			}*/
-			//Climbing
-			if(rpgCharacterState == RPGCharacterState.CLIMBING && !isClimbing)
-			{
-				if(inputVertical > 0.1f)
-				{
-					animator.applyRootMotion = true;
-					animator.SetTrigger("Climb-UpTrigger");
-					isClimbing = true;
-				}
-				if(inputVertical < -0.1f)
-				{
-					animator.applyRootMotion = true;
-					animator.SetTrigger("Climb-DownTrigger");
-					isClimbing = true;
-				}
-			}
-			if(rpgCharacterState == RPGCharacterState.CLIMBING && isClimbing)
-			{
-				if(inputVertical == 0)
-				{
-					isClimbing = false;
-				}
 			}
 		}
 		else
 		{
 			Debug.Log("ERROR: There is no animator for character.");
 		}
-		if(Input.GetKeyDown(KeyCode.T))
-		{
-			if(Time.timeScale != 1)
-			{
-				Time.timeScale = 1;
-			}
-			else
-			{
-				Time.timeScale = 0.15f;
-			}
-		}
-		if(Input.GetKeyDown(KeyCode.P))
-		{
-			if(Time.timeScale != 1)
-			{
-				Time.timeScale = 1;
-			}
-			else
-			{
-				Time.timeScale = 0f;
-			}
-		}
-
-        m_combo.UpdateCombo();
 	}
-	
 	#endregion
 
 	#region Fixed/Late Updates
-	
+
 	void FixedUpdate()
 	{
-		if(rpgCharacterState != RPGCharacterState.SWIMMING)
+		CheckForGrounded();
+		//apply gravity force
+		rb.AddForce(0, gravity, 0, ForceMode.Acceleration);
+		//check if falling
+		if(rb.velocity.y < fallingVelocity)
 		{
-			CheckForGrounded();
-			//apply gravity force
-			rb.AddForce(0, gravity, 0, ForceMode.Acceleration);
-			//check if character can move
-			if(canMove && !isBlocking && rpgCharacterState != RPGCharacterState.CLIMBING)
-			{
-				AirControl();
-			}
-			//check if falling
-			if(rb.velocity.y < fallingVelocity && rpgCharacterState != RPGCharacterState.CLIMBING)
-			{
-				isFalling = true;
-				animator.SetInteger("Jumping", 2);
-				canJump = false;
-			} 
-			else
-			{
-				isFalling = false;
-			}
+			isFalling = true;
+			animator.SetInteger("Jumping", 2);
+			canJump = false;
 		} 
 		else
 		{
-			WaterControl();
+			isFalling = false;
 		}
 		moveSpeed = UpdateMovement();
 	}
@@ -497,6 +234,7 @@ public class RPGCharacterController : MonoBehaviour
 	//get velocity of rigid body and pass the value to the animator to control the animations
 	void LateUpdate()
 	{
+        if (rpgCharacterState == RPGCharacterState.CINEMATIC) return;
 		//Get local velocity of charcter
 		float velocityXel = transform.InverseTransformDirection(rb.velocity).x;
 		float velocityZel = transform.InverseTransformDirection(rb.velocity).z;
@@ -518,7 +256,6 @@ public class RPGCharacterController : MonoBehaviour
 			}
 		}
 	}
-	
 	#endregion
 
 	#region UpdateMovement
@@ -526,7 +263,7 @@ public class RPGCharacterController : MonoBehaviour
 	float UpdateMovement()
 	{
 		Vector3 motion = inputVec;
-		if(isGrounded && rpgCharacterState != RPGCharacterState.CLIMBING)
+		if(isGrounded)
 		{
 			//reduce input for diagonal movement
 			if(motion.magnitude > 1)
@@ -555,25 +292,9 @@ public class RPGCharacterController : MonoBehaviour
 		}
 		else
 		{
-			if(rpgCharacterState != RPGCharacterState.SWIMMING)
-			{
-				//if we are falling use momentum
-				newVelocity = rb.velocity;
-			} 
-			else
-			{
-				newVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-			}
+			newVelocity = rb.velocity;
 		}
-		if(isStrafing && !isRelax)
-		{
-			//make character point at target
-			Quaternion targetRotation;
-			Vector3 targetPos = target.transform.position;
-			targetRotation = Quaternion.LookRotation(targetPos - new Vector3(transform.position.x, 0, transform.position.z));
-			transform.eulerAngles = Vector3.up * Mathf.MoveTowardsAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y, (rotationSpeed * Time.deltaTime) * rotationSpeed);
-		} 
-		else if(isAiming)
+		if(isAiming)
 		{
 			Aiming();
 		}
@@ -587,7 +308,6 @@ public class RPGCharacterController : MonoBehaviour
 		//return a movement value for the animator
 		return inputVec.magnitude;
 	}
-
 	//rotate character towards direction moved
 	void RotateTowardsMovementDir()
 	{
@@ -596,11 +316,9 @@ public class RPGCharacterController : MonoBehaviour
 			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(inputVec), Time.deltaTime * rotationSpeed);
 		}
 	}
-
 	#endregion
 
 	#region Aiming
-
 	void Aiming()
 	{
 		for(int i = 0; i < Input.GetJoystickNames().Length; i++) 
@@ -633,142 +351,9 @@ public class RPGCharacterController : MonoBehaviour
 		transform.rotation = rotation;
 		}
 	}
-
-	#endregion
-
-	#region Swimming
-
-	void OnTriggerEnter(Collider collide)
-	{
-		//If entering a water volume
-		if(collide.gameObject.layer == 4){
-			/*rpgCharacterState = RPGCharacterState.SWIMMING;
-			canAction = false;
-			rb.useGravity = false;
-			animator.SetTrigger("SwimTrigger");
-			animator.SetBool("Swimming", true);
-			animator.SetInteger("Weapon", 0);
-			weapon = Weapon.UNARMED;
-			StartCoroutine(_WeaponVisibility(leftWeapon, 0, false));
-			StartCoroutine(_WeaponVisibility(rightWeapon, 0, false));
-			animator.SetInteger("RightWeapon", 0);
-			animator.SetInteger("LeftWeapon", 0);
-			animator.SetInteger("LeftRight", 0);
-			FXSplash.Emit(30);*/
-		}
-		else if(collide.transform.name.Contains("Cliff"))
-		{
-			isNearCliff = true;
-			cliff = collide.gameObject;
-		}
-	}
-
-	void OnTriggerExit(Collider collide)
-	{
-		//If leaving a water volume
-		if(collide.gameObject.layer == 4)
-		{
-			rpgCharacterState = RPGCharacterState.DEFAULT;
-			canAction = true;
-			rb.useGravity = true;
-			animator.SetInteger("Jumping", 2);
-			animator.SetBool("Swimming", false);
-			capCollider.radius = 0.5f;
-		}
-		//If leaving a ladder
-		//else if(collide.transform.parent.name.Contains("Ladder"))
-		//{
-		//	isNearLadder = false;
-		//	ladder = null;
-		//}
-	}
-
-	void WaterControl()
-	{
-		AscendDescend();
-		Vector3 motion = inputVec;
-		//dampen vertical water movement
-		Vector3 dampenVertical = new Vector3(rb.velocity.x, (rb.velocity.y * 0.985f), rb.velocity.z);
-		rb.velocity = dampenVertical;
-		Vector3 waterDampen = new Vector3((rb.velocity.x * 0.98f), rb.velocity.y, (rb.velocity.z * 0.98f));
-		//If swimming, don't dampen movement, and scale capsule collider
-		if(moveSpeed < 0.1f)
-		{
-			rb.velocity = waterDampen;
-			capCollider.radius = 0.5f;
-		} 
-		else
-		{
-			capCollider.radius = 1.5f;
-		}
-		rb.velocity = waterDampen;
-		//clamp diagonal movement so its not faster
-		motion *= (Mathf.Abs(inputVec.x) == 1 && Mathf.Abs(inputVec.z) == 1) ? 0.7f:1;
-		rb.AddForce(motion * inWaterSpeed, ForceMode.Acceleration);
-		//limit the amount of velocity we can achieve to water speed
-		float velocityX = 0;
-		float velocityZ = 0;
-		if(rb.velocity.x > inWaterSpeed)
-		{
-			velocityX = GetComponent<Rigidbody>().velocity.x - inWaterSpeed;
-			if(velocityX < 0)
-			{
-				velocityX = 0;
-			}
-			rb.AddForce(new Vector3(-velocityX, 0, 0), ForceMode.Acceleration);
-		}
-		if(rb.velocity.x < minVelocity)
-		{
-			velocityX = rb.velocity.x - minVelocity;
-			if(velocityX > 0)
-			{
-				velocityX = 0;
-			}
-			rb.AddForce(new Vector3(-velocityX, 0, 0), ForceMode.Acceleration);
-		}
-		if(rb.velocity.z > inWaterSpeed)
-		{
-			velocityZ = rb.velocity.z - maxVelocity;
-			if(velocityZ < 0)
-			{
-				velocityZ = 0;
-			}
-			rb.AddForce(new Vector3(0, 0, -velocityZ), ForceMode.Acceleration);
-		}
-		if(rb.velocity.z < minVelocity)
-		{
-			velocityZ = rb.velocity.z - minVelocity;
-			if(velocityZ > 0)
-			{
-				velocityZ = 0;
-			}
-			rb.AddForce(new Vector3(0, 0, -velocityZ), ForceMode.Acceleration);
-		}
-	}
-
-	void AscendDescend()
-	{
-		if(doJump)
-		{
-			//swim down with left control
-			if(isStrafing)
-			{
-				animator.SetBool("Strafing", true);
-				animator.SetTrigger("JumpTrigger");
-				rb.velocity -=  inWaterSpeed * Vector3.up;
-			} 
-			else
-			{
-				animator.SetTrigger("JumpTrigger");
-				rb.velocity +=  inWaterSpeed * Vector3.up;
-			}
-		}
-	}
-
 	#endregion
 
 	#region Jumping
-
 	//checks if character is within a certain distance from the ground, and markes it IsGrounded
 	void CheckForGrounded()
 	{
@@ -784,20 +369,11 @@ public class RPGCharacterController : MonoBehaviour
 				isGrounded = true;
 				canJump = true;
 				startFall = false;
-				doublejumped = false;
 				canDoubleJump = false;
 				isFalling = false;
 				if(!isJumping) 
 				{
 					animator.SetInteger("Jumping", 0);
-				}
-				//exit climbing on ground
-				if(rpgCharacterState == RPGCharacterState.CLIMBING)
-				{
-					animator.SetTrigger("Climb-Off-BottomTrigger");
-					gravity = gravityTemp;
-					rb.useGravity = true;
-					rpgCharacterState = RPGCharacterState.DEFAULT;
 				}
 			}
 			else
@@ -816,34 +392,12 @@ public class RPGCharacterController : MonoBehaviour
 				StartCoroutine(_Jump());
 			}
 		}
-		/*else
-		{    
-			canDoubleJump = true;
-			canJump = false;
-			if(isFalling)
-			{
-				//set the animation back to falling
-				animator.SetInteger("Jumping", 2);
-				//prevent from going into land animation while in air
-				if(!startFall)
-				{
-					animator.SetTrigger("JumpTrigger");
-					startFall = true;
-				}
-			}
-			if(canDoubleJump && doublejumping && Input.GetButtonDown("Jump") && !doublejumped && isFalling)
-			{
-				// Apply the current movement to launch velocity
-				rb.velocity += doublejumpSpeed * Vector3.up;
-				animator.SetInteger("Jumping", 3);
-				doublejumped = true;
-			}
-		}*/
 	}
 
 	public IEnumerator _Jump()
 	{
-		isJumping = true;
+        Player.instance.animEnded = false;
+        isJumping = true;
 		animator.SetInteger("Jumping", 1);
 		animator.SetTrigger("JumpTrigger");
 		// Apply the current movement to launch velocity
@@ -851,75 +405,43 @@ public class RPGCharacterController : MonoBehaviour
 		canJump = false;
 		yield return new WaitForSeconds(0.5f);
 		isJumping = false;
+        Player.instance.animEnded = true;
 	}
-
-	void AirControl()
-	{
-		if(!isGrounded)
-		{
-			Vector3 motion = inputVec;
-			motion *= (Mathf.Abs(inputVec.x) == 1 && Mathf.Abs(inputVec.z) == 1) ? 0.7f:1;
-			rb.AddForce(motion * inAirSpeed, ForceMode.Acceleration);
-			//limit the amount of velocity we can achieve
-			float velocityX = 0;
-			float velocityZ = 0;
-			if(rb.velocity.x > maxVelocity)
-			{
-				velocityX = GetComponent<Rigidbody>().velocity.x - maxVelocity;
-				if(velocityX < 0)
-				{
-					velocityX = 0;
-				}
-				rb.AddForce(new Vector3(-velocityX, 0, 0), ForceMode.Acceleration);
-			}
-			if(rb.velocity.x < minVelocity)
-			{
-				velocityX = rb.velocity.x - minVelocity;
-				if(velocityX > 0)
-				{
-					velocityX = 0;
-				}
-				rb.AddForce(new Vector3(-velocityX, 0, 0), ForceMode.Acceleration);
-			}
-			if(rb.velocity.z > maxVelocity)
-			{
-				velocityZ = rb.velocity.z - maxVelocity;
-				if(velocityZ < 0)
-				{
-					velocityZ = 0;
-				}
-				rb.AddForce(new Vector3(0, 0, -velocityZ), ForceMode.Acceleration);
-			}
-			if(rb.velocity.z < minVelocity)
-			{
-				velocityZ = rb.velocity.z - minVelocity;
-				if(velocityZ > 0)
-				{
-					velocityZ = 0;
-				}
-				rb.AddForce(new Vector3(0, 0, -velocityZ), ForceMode.Acceleration);
-			}
-		}
-	}
-
 	#endregion
 
 	#region MiscMethods
 
-	public void Climbing()
-	{
-		rpgCharacterState = RPGCharacterState.CLIMBING;
-	}
+    public void Bow()
+    {
+        currentKind = KIND.angelic;
+        leftWeapon = 4;
+        animator.SetInteger("LeftRight", 3);
+        animator.SetInteger("Weapon", 4);
+        animator.SetInteger("LeftWeapon", 0);
+        animator.SetInteger("RightWeapon", 0);
+        animator.SetBool("Armed", true);
+        animator.SetTrigger("WeaponUnsheathTrigger");
+        weapon = Weapon.TWOHANDBOW;
+        twoHandBow.SetActive(true);
+        swordL.SetActive(false);
+        swordR.SetActive(false);
+    }
 
-	public void EndClimbing()
-	{
-		rpgCharacterState = RPGCharacterState.DEFAULT;
-		gravity = gravityTemp;
-		rb.useGravity = true;
-		animator.applyRootMotion = false;
-		canMove = true;
-		isClimbing = false;
-	}
+    public void Sword()
+    {
+        currentKind = KIND.demonic;
+        leftWeapon = 8;
+        rightWeapon = 9;
+        animator.SetInteger("LeftRight", 3);
+        animator.SetInteger("Weapon", 7);
+        animator.SetInteger("LeftWeapon", leftWeapon);
+        animator.SetInteger("RightWeapon", rightWeapon);
+        animator.SetBool("Armed", true);
+        weapon = Weapon.ARMED;
+        twoHandBow.SetActive(false);
+        swordL.SetActive(true);
+        swordR.SetActive(true);
+    }
 
 	//0 = No side
 	//1 = Left
@@ -946,7 +468,40 @@ public class RPGCharacterController : MonoBehaviour
 	//weaponNumber 18 = Rifle
 	//weaponNumber 19 == Right Spear
 	//weaponNumber 20 == 2H Club
-	public void Attack(Attack lAttack)
+    public void JumpAttack(Attack lAttack)
+    {
+        int attackSide = lAttack.side;
+        int attackNumber = lAttack.number;
+        rb.velocity = new Vector3(0f, 5f, 0f);
+        animator.SetTrigger("JumpAttack" + attackNumber + "Trigger");
+        if (weapon == Weapon.ARMED)
+        {
+            if (attackSide != 3)
+            {
+                StartCoroutine(_LockMovementAndAttack(0, 0.5f));
+                //if (attackSide == 1) StartCoroutine(ActivateAttack(0.1f, HANDKIND.left));
+                //else if (attackSide == 2) StartCoroutine(ActivateAttack(0.1f, HANDKIND.right));
+            }
+        }
+        else
+        {
+            StartCoroutine(_LockMovementAndAttack(0, 0.75f));
+            //StartCoroutine(ShootCorou(0.5f));
+        }
+    }
+
+    private void FreezeInAIr()
+    {
+        rb.constraints = RigidbodyConstraints.FreezePositionY;
+    }
+
+    private void UnFreeze()
+    {
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+    }
+
+    public void Attack(Attack lAttack)
 	{
         int attackSide = lAttack.side;
         int attackNumber = lAttack.number;
@@ -959,15 +514,14 @@ public class RPGCharacterController : MonoBehaviour
 					if(attackSide != 3)
 					{
 						animator.SetTrigger("Attack" + (attackNumber).ToString() + "Trigger");
-						StartCoroutine(_LockMovementAndAttack(0, 0.6f));
-                        if (attackSide == 1) StartCoroutine(ActivateAttack(0.6f, HANDKIND.left));
-                        else if (attackSide == 2) StartCoroutine(ActivateAttack(0.6f, HANDKIND.right));
+						StartCoroutine(_LockMovementAndAttack(0, 0.4f));
+                        //if (attackSide == 1) StartCoroutine(ActivateAttack(0.4f, HANDKIND.left));
+                        //else if (attackSide == 2) StartCoroutine(ActivateAttack(0.4f, HANDKIND.right));
 					}
 					else
 					{
 						animator.SetTrigger("AttackDual" + (attackNumber + 1).ToString() + "Trigger");
 						StartCoroutine(_LockMovementAndAttack(0, 0.75f));
-                        StartCoroutine(ActivateAttack(0.75f, HANDKIND.two_hand));
 					}
 				}
 			}
@@ -976,36 +530,26 @@ public class RPGCharacterController : MonoBehaviour
 			    if(isGrounded)
 			    {
 				    animator.SetTrigger("Attack" + (attackNumber).ToString() + "Trigger");
-				    if(weapon == Weapon.TWOHANDSWORD)
-				    {
-					    StartCoroutine(_LockMovementAndAttack(0, 0.85f));
-				    }
-				    else if(weapon == Weapon.TWOHANDAXE)
-				    {
-					    StartCoroutine(_LockMovementAndAttack(0, 1.5f));
-				    }
-				    else
-				    {
-                        
-					    StartCoroutine(_LockMovementAndAttack(0, 0.75f));
-                        StartCoroutine(ShootCorou(0.5f));
-				    }
+					StartCoroutine(_LockMovementAndAttack(0, 0.75f));
+                    //StartCoroutine(ShootCorou(0.5f));
 			    }
 			}
 		}
 	}
+
     public IEnumerator ShootCorou(float time)
     {
         yield return new WaitForSeconds(time / animationSpeed);
-        weaponController.curentShooter.Shoot(transform.rotation, transform.position + 1.5f * transform.forward);
+        //weaponController.curentShooter.Shoot(transform.rotation, transform.position + 1.5f * transform.forward);
     }
+
     public IEnumerator ActivateAttack(float time, HANDKIND hand)
     {
-        weaponController.activateWeaponAttack(hand, true);
+        //weaponController.activateWeaponAttack(hand, true);
         yield return new WaitForSeconds(time / animationSpeed);
-        weaponController.activateWeaponAttack(hand, false);
-
+        //weaponController.activateWeaponAttack(hand, false);
     }
+
 	public void AttackKick(int kickSide)
 	{
 		if(isGrounded)
@@ -1022,97 +566,28 @@ public class RPGCharacterController : MonoBehaviour
 		}
 	}
 
-	//0 = No side
-	//1 = Left
-	//2 = Right
-	//3 = Dual
-	public void CastAttack(int attackSide)
-	{
-		if(weapon == Weapon.UNARMED || weapon == Weapon.STAFF)
-		{
-			int maxAttacks = 3;
-			if(attackSide == 1)
-			{
-				int attackNumber = Random.Range(0, maxAttacks);
-				if(isGrounded)
-				{
-					animator.SetTrigger("CastAttack" + (attackNumber + 1).ToString() + "Trigger");
-					StartCoroutine(_LockMovementAndAttack(0, 0.8f));
-				}
-			}
-			if(attackSide == 2)
-			{
-				int attackNumber = Random.Range(3, maxAttacks + 3);
-				if(isGrounded)
-				{
-					animator.SetTrigger("CastAttack" + (attackNumber + 1).ToString() + "Trigger");
-					StartCoroutine(_LockMovementAndAttack(0, 0.8f));
-				}
-			}
-			if(attackSide == 3)
-			{
-				int attackNumber = Random.Range(0, maxAttacks);
-				if(isGrounded)
-				{
-					animator.SetTrigger("CastDualAttack" + (attackNumber + 1).ToString() + "Trigger");
-					StartCoroutine(_LockMovementAndAttack(0, 1f));
-				}
-			}
-		} 
-	}
-
-	public void Blocking()
-	{
-		if(Input.GetAxisRaw("TargetBlock") < -0.1f && canAction && isGrounded)
-		{
-			if(!isBlocking)
-			{
-				animator.SetTrigger("BlockTrigger");
-			}
-			isBlocking = true;
-			canJump = false;
-			animator.SetBool("Blocking", true);
-			rb.velocity = Vector3.zero;
-			rb.angularVelocity = Vector3.zero;
-			inputVec = Vector3.zero;
-		}
-		else
-		{
-			isBlocking = false;
-			canJump = true;
-			animator.SetBool("Blocking", false);
-		}
-	}
-
 	public void GetHit()
 	{
-		if(weapon != Weapon.RIFLE)
+		int hits = 5;
+		int hitNumber = Random.Range(0, hits);
+		animator.SetTrigger("GetHit" + (hitNumber + 1).ToString()+ "Trigger");
+		StartCoroutine(_LockMovementAndAttack(0.1f, 0.4f));
+		//apply directional knockback force
+		if(hitNumber <= 1)
 		{
-			int hits = 5;
-			int hitNumber = Random.Range(0, hits);
-			animator.SetTrigger("GetHit" + (hitNumber + 1).ToString()+ "Trigger");
-			StartCoroutine(_LockMovementAndAttack(0.1f, 0.4f));
-			//apply directional knockback force
-			if(hitNumber <= 1)
-			{
-				StartCoroutine(_Knockback(-transform.forward, 8, 4));
-			} 
-			else if(hitNumber == 2)
-			{
-				StartCoroutine(_Knockback(transform.forward, 8, 4));
-			}
-			else if(hitNumber == 3)
-			{
-				StartCoroutine(_Knockback(transform.right, 8, 4));
-			}
-			else if(hitNumber == 4)
-			{
-				StartCoroutine(_Knockback(-transform.right, 8, 4));
-			}
+			StartCoroutine(_Knockback(-transform.forward, 8, 4));
+		} 
+		else if(hitNumber == 2)
+		{
+			StartCoroutine(_Knockback(transform.forward, 8, 4));
 		}
-		else
+		else if(hitNumber == 3)
 		{
-			animator.SetTrigger("GetHit1Trigger");
+			StartCoroutine(_Knockback(transform.right, 8, 4));
+		}
+		else if(hitNumber == 4)
+		{
+			StartCoroutine(_Knockback(-transform.right, 8, 4));
 		}
 	}
 
@@ -1120,9 +595,9 @@ public class RPGCharacterController : MonoBehaviour
 	{
 		isKnockback = true;
 		StartCoroutine(_KnockbackForce(knockDirection, knockBackAmount, variableAmount));
-        carac.setTouchable(TOUCHABLESTATE.god);
+        //carac.setTouchable(TOUCHABLESTATE.god);
 		yield return new WaitForSeconds(.1f);
-        carac.setTouchable(TOUCHABLESTATE.normal);
+        //carac.setTouchable(TOUCHABLESTATE.normal);
 		isKnockback = false;
 	}
 
@@ -1165,7 +640,7 @@ public class RPGCharacterController : MonoBehaviour
 			{
 				StartCoroutine(_DirectionalRoll(Input.GetAxis("DashVertical"), Input.GetAxis("DashHorizontal")));
 			}*/
-            if (Input.GetButtonDown("LightHit") /*|| Input.GetButtonDown("Death")*/) 
+            if (Input.GetButtonDown("LightHit"))
             {
 				StartCoroutine(_DirectionalRoll(0,0));
 			}
@@ -1220,9 +695,9 @@ public class RPGCharacterController : MonoBehaviour
 			animator.SetTrigger("RollLeftTrigger");
 		}
 		isRolling = true;
-        carac.setTouchable(TOUCHABLESTATE.god);
+        //carac.setTouchable(TOUCHABLESTATE.god);
 		yield return new WaitForSeconds(rollduration/animationSpeed);
-        carac.setTouchable(TOUCHABLESTATE.normal);
+        //carac.setTouchable(TOUCHABLESTATE.normal);
         isRolling = false;
 	}
 
@@ -1230,80 +705,66 @@ public class RPGCharacterController : MonoBehaviour
 	public void Hit()
 	{
 	}
-
 	public void Shoot()
 	{
 	}
-
 	public void FootR()
 	{
 	}
-
 	public void FootL()
 	{
 	}
-
 	public void Land()
 	{
 	}
 
-	#endregion
-	
-	#region _Coroutines
+    #endregion
 
-	//method to keep character from moveing while attacking, etc
-	public IEnumerator _LockMovementAndAttack(float delayTime, float lockTime)
+    #region SetMode
+
+    public void SetModeCinematic()
+    {
+        rpgCharacterState = RPGCharacterState.CINEMATIC;
+        weapon = 0;
+        animator.SetTrigger("RelaxTrigger");
+        animator.SetBool("Relax", true);
+    }
+
+    public void SetModeDefault()
+    {
+        rpgCharacterState = RPGCharacterState.DEFAULT;
+        Sword();
+    }
+    #endregion
+
+    #region _Coroutines
+
+    //method to keep character from moveing while attacking, etc
+    public IEnumerator _LockMovementAndAttack(float delayTime, float lockTime)
 	{
 		yield return new WaitForSeconds(delayTime);
-		canAction = false;
-		canMove = false;
-		animator.SetBool("Moving", false);
-		rb.velocity = Vector3.zero;
-		rb.angularVelocity = Vector3.zero;
-		inputVec = new Vector3(0, 0, 0);
-		animator.applyRootMotion = true;
+        if (isGrounded)
+        {
+            canAction = false;
+            canMove = false;
+            animator.SetBool("Moving", false);
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            inputVec = new Vector3(0, 0, 0);
+            animator.applyRootMotion = true;
+        }
 		yield return new WaitForSeconds(lockTime / animationSpeed);
-		canAction = true;
+        canAction = true;
 		canMove = true;
 		animator.applyRootMotion = false;
 	}
 
-	//for controller weapon switching
-	void SwitchWeaponTwoHand(int upDown)
-	{
-        currentKind = KIND.angelic;
-		canAction = false;
-		int weaponSwitch = (int)weapon;
-        animationSpeed = 10;
-        StartCoroutine(_SwitchWeapon(4));
-     
-	}
-
-	//for controller weapon switching
-	void SwitchWeaponLeftRight(int upDown)
-	{
-		int weaponSwitch = 0;
-		canAction = false;
-		if(upDown == 0)
-		{
-            weaponSwitch = 8;
-		}
-		if(upDown == 1)
-		{
-            weaponSwitch = 9;
-		}
-		StartCoroutine(_SwitchWeapon(weaponSwitch));
-	}
- 
     public IEnumerator _DoubleWeapon()
     {
         currentKind = KIND.demonic;
         animationSpeed = 10;
-        SwitchWeaponLeftRight(0);
         yield return new WaitForSeconds(1.05f / animationSpeed);
         animationSpeed = 10;
-        SwitchWeaponLeftRight(1);
-        
     }
 
     public IEnumerator _EnterParadise()
@@ -1312,6 +773,26 @@ public class RPGCharacterController : MonoBehaviour
         animator.SetBool("Moving", true);
         animator.SetFloat("Velocity Z", 0.5f);
         yield break;
+    }
+
+    public IEnumerator _GabrielCinematic()
+    {
+        while (true)
+        {
+            animator.SetBool("Moving", true);
+            animator.SetFloat("Velocity Z", 0.5f);
+            animator.speed = 0.6f;
+            animator.applyRootMotion = true;
+            yield return null;
+        }
+    }
+
+    public void SetPropertiesToDefault()
+    {
+        animator.SetBool("Moving", false);
+        animator.SetFloat("Velocity Z", 0.0f);
+        animator.speed = 1.0f;
+        animator.applyRootMotion = false;
     }
 
     //function to switch weapons
@@ -1430,7 +911,6 @@ public class RPGCharacterController : MonoBehaviour
         animationSpeed = 2;
 		yield return null;
 	}
-
 	public IEnumerator _SheathWeapon(int weaponNumber, int weaponDraw)
 	{
 		if((weaponNumber == 8))
@@ -1496,7 +976,6 @@ public class RPGCharacterController : MonoBehaviour
 		StartCoroutine(_LockMovementAndAttack(0, 1));
 		yield return null;
 	}
-		
 	public IEnumerator _UnSheathWeapon(int weaponNumber)
 	{
 		animator.SetInteger("Weapon", -1);
@@ -1511,9 +990,8 @@ public class RPGCharacterController : MonoBehaviour
 		    if(weaponNumber == 4)
 			{
 				weapon = Weapon.TWOHANDBOW;
-				StartCoroutine(_WeaponVisibility(weaponNumber, 0.55f / animationSpeed, true));
+                StartCoroutine(_WeaponVisibility(weaponNumber, 0.55f / animationSpeed, true));
 			}
-			
 		}
 		//one handed weapons
 		else
@@ -1587,16 +1065,13 @@ public class RPGCharacterController : MonoBehaviour
 		}
 		yield return null;
 	}
-
 	public IEnumerator _WeaponVisibility(int weaponNumber, float delayTime, bool visible)
 	{
 		yield return new WaitForSeconds(delayTime);
-	
 		if(weaponNumber == 4) 
 		{
 			twoHandBow.SetActive(visible);
 		}
-		
 		if(weaponNumber == 8) 
 		{
 			swordL.SetActive(visible);
@@ -1605,10 +1080,8 @@ public class RPGCharacterController : MonoBehaviour
         {
             swordR.SetActive(visible);
         }
-		
 		yield return null;
 	}
-
 	public IEnumerator _BlockHitReact()
 	{
 		int hits = 2;
@@ -1618,7 +1091,6 @@ public class RPGCharacterController : MonoBehaviour
 		StartCoroutine(_Knockback(-transform.forward, 3, 3));
 		yield return null;
 	}
-
 	public IEnumerator _BlockBreak()
 	{
 		animator.applyRootMotion = true;
@@ -1626,25 +1098,23 @@ public class RPGCharacterController : MonoBehaviour
 		yield return new WaitForSeconds(1f);
 		animator.applyRootMotion = false;
 	}
-
 	public void Pickup()
 	{
 		animator.SetTrigger("PickupTrigger");
 		StartCoroutine(_LockMovementAndAttack(0, 1.4f));
 	}
-
 	public void Activate()
 	{
 		animator.SetTrigger("ActivateTrigger");
 		StartCoroutine(_LockMovementAndAttack(0, 1.2f));
 	}
-	
 	#endregion
 
     private void Death()
     {
         StartCoroutine(_Death());
     }
+
     private void BeHit(int damage,int maxhp)
     {
         GetHit();

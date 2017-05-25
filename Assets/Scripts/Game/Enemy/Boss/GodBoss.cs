@@ -18,11 +18,6 @@ public class GodBoss : Boss {
 
     //}
 
-    override protected void Init() {
-        Debug.Log("Hello");
-        base.Init();
-    }
-
     protected void Update() {
 
     }
