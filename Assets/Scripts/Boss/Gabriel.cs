@@ -10,7 +10,7 @@ namespace Assets.Scripts.Boss
     /// <summary>
     /// 
     /// </summary>
-    public class Gabrielle : MonoBehaviour
+    public class Gabrielle : Boss
     {
         delegate void Pattern();
         private List<Pattern> tabPattern = new List<Pattern>();
@@ -18,7 +18,7 @@ namespace Assets.Scripts.Boss
         private float charge = 0.0f;
         private bool startCharging = false;
 
-        public GameObject weapon;
+       // public GameObject weapon;     Enemy, dont hérite maintenant gabrielle, contient déjà une variable weapon
         public GameObject tornado;
 
         private static Gabrielle _instance;

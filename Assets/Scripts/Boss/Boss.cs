@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Rpg;
 
 namespace Assets.Scripts.Boss
 {
@@ -6,7 +7,7 @@ namespace Assets.Scripts.Boss
     /// <summary>
     /// 
     /// </summary>
-    public class Boss : MonoBehaviour
+    public class Boss : Enemy
     {
         delegate void DoAction();
 
