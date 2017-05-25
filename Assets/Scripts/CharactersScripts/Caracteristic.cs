@@ -11,7 +11,10 @@ namespace Rpg.Characters
     
     public class HealthEvent : UnityEvent<int,int>
     {
-
+        void isHit(int _pv, int _maxpv)
+        {
+            
+        }
     }
     public enum TOUCHABLESTATE { god, normal }
     public class Caracteristic : MonoBehaviour
@@ -65,7 +68,7 @@ namespace Rpg.Characters
                 isDeath.Invoke();
                 return;
             }
-            //isHit.Invoke(_pv,_maxPv);
+            isHit.Invoke(_pv,_maxPv);
         } 
 
         public void Heal(int healPoint)
