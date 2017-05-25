@@ -4,11 +4,12 @@ using System.Runtime.InteropServices;
 using Rpg.Characters;
 using Rpg;
 using Rpg.Manager;
+using Rpg.GraphicElement.Weapons;
 using Rpg.Controller;
 using Assets.Scripts.Game;
 using Assets.Scripts.Boss.Gabriel;
 
-public enum Weapon {
+public enum Item {
 	UNARMED = 0,
 	TWOHANDSWORD = 1,
 	TWOHANDSPEAR = 2,
@@ -98,7 +99,7 @@ public class RPGCharacterController : MonoBehaviour
 	public Vector3 inputVec;
 	Vector3 newVelocity;
 	//Weapon and Shield
-	public Weapon weapon;
+	public Item weapon;
 	[HideInInspector]
 	public int rightWeapon = 0;
 	[HideInInspector]
@@ -132,7 +133,7 @@ public class RPGCharacterController : MonoBehaviour
 	public GameObject swordL;
 	public GameObject swordR;
     private bool _attackLeft = false;
-    public KIND currentKind;
+    public ALIGN currentKind;
     public float animationSpeed;
     #endregion
 
@@ -198,7 +199,7 @@ public class RPGCharacterController : MonoBehaviour
 		if(animator)
 		{
 			if(!(canMove && !isBlocking && !isDead)) inputVec = new Vector3(0, 0, 0);
-			if(inputUnarmed && canAction && isGrounded && !isBlocking && weapon != Weapon.UNARMED)
+			if(inputUnarmed && canAction && isGrounded && !isBlocking && weapon != Item.UNARMED)
 			{
 				StartCoroutine(_SwitchWeapon(0));
 			}
@@ -413,7 +414,7 @@ public class RPGCharacterController : MonoBehaviour
 
     public void Bow()
     {
-        currentKind = KIND.angelic;
+        currentKind = ALIGN.angelic;
         leftWeapon = 4;
         animator.SetInteger("LeftRight", 3);
         animator.SetInteger("Weapon", 4);
@@ -421,7 +422,7 @@ public class RPGCharacterController : MonoBehaviour
         animator.SetInteger("RightWeapon", 0);
         animator.SetBool("Armed", true);
         animator.SetTrigger("WeaponUnsheathTrigger");
-        weapon = Weapon.TWOHANDBOW;
+        weapon = Item.TWOHANDBOW;
         twoHandBow.SetActive(true);
         swordL.SetActive(false);
         swordR.SetActive(false);
@@ -429,7 +430,7 @@ public class RPGCharacterController : MonoBehaviour
 
     public void Sword()
     {
-        currentKind = KIND.demonic;
+        currentKind = ALIGN.demonic;
         leftWeapon = 8;
         rightWeapon = 9;
         animator.SetInteger("LeftRight", 3);
@@ -437,7 +438,7 @@ public class RPGCharacterController : MonoBehaviour
         animator.SetInteger("LeftWeapon", leftWeapon);
         animator.SetInteger("RightWeapon", rightWeapon);
         animator.SetBool("Armed", true);
-        weapon = Weapon.ARMED;
+        weapon = Item.ARMED;
         twoHandBow.SetActive(false);
         swordL.SetActive(true);
         swordR.SetActive(true);
@@ -474,7 +475,7 @@ public class RPGCharacterController : MonoBehaviour
         int attackNumber = lAttack.number;
         rb.velocity = new Vector3(0f, 5f, 0f);
         animator.SetTrigger("JumpAttack" + attackNumber + "Trigger");
-        if (weapon == Weapon.ARMED)
+        if (weapon == Item.ARMED)
         {
             if (attackSide != 3)
             {
@@ -486,7 +487,7 @@ public class RPGCharacterController : MonoBehaviour
         else
         {
             StartCoroutine(_LockMovementAndAttack(0, 0.75f));
-            //StartCoroutine(ShootCorou(0.5f));
+            StartCoroutine(ShootCorou(0.5f));
         }
     }
 
@@ -507,7 +508,7 @@ public class RPGCharacterController : MonoBehaviour
         int attackNumber = lAttack.number;
         if (canAction)
 		{
-			if(weapon == Weapon.ARMED)
+			if(weapon == Item.ARMED)
 			{
 				if(isGrounded)
 				{
@@ -515,8 +516,8 @@ public class RPGCharacterController : MonoBehaviour
 					{
 						animator.SetTrigger("Attack" + (attackNumber).ToString() + "Trigger");
 						StartCoroutine(_LockMovementAndAttack(0, 0.4f));
-                        //if (attackSide == 1) StartCoroutine(ActivateAttack(0.4f, HANDKIND.left));
-                        //else if (attackSide == 2) StartCoroutine(ActivateAttack(0.4f, HANDKIND.right));
+                        if (attackSide == 1) StartCoroutine(ActivateAttack(0.4f, HAND.left));
+                        else if (attackSide == 2) StartCoroutine(ActivateAttack(0.4f, HAND.right));
 					}
 					else
 					{
@@ -531,7 +532,7 @@ public class RPGCharacterController : MonoBehaviour
 			    {
 				    animator.SetTrigger("Attack" + (attackNumber).ToString() + "Trigger");
 					StartCoroutine(_LockMovementAndAttack(0, 0.75f));
-                    //StartCoroutine(ShootCorou(0.5f));
+                    StartCoroutine(ShootCorou(0.5f));
 			    }
 			}
 		}
@@ -540,14 +541,18 @@ public class RPGCharacterController : MonoBehaviour
     public IEnumerator ShootCorou(float time)
     {
         yield return new WaitForSeconds(time / animationSpeed);
-        //weaponController.curentShooter.Shoot(transform.rotation, transform.position + 1.5f * transform.forward);
+        twoHandBow.GetComponent<BowKind>().Shoot(transform.rotation, transform.position + 1.5f * transform.forward);
     }
 
-    public IEnumerator ActivateAttack(float time, HANDKIND hand)
+    public IEnumerator ActivateAttack(float time, HAND hand)
     {
-        //weaponController.activateWeaponAttack(hand, true);
+        if (hand == HAND.two_hand) twoHandBow.GetComponent<BowKind>().ActivateAttack(true);
+        if (hand == HAND.left) swordL.GetComponent<SwordKind>().ActivateAttack(true);
+        if (hand == HAND.right) swordR.GetComponent<SwordKind>().ActivateAttack(true);
         yield return new WaitForSeconds(time / animationSpeed);
-        //weaponController.activateWeaponAttack(hand, false);
+        if (hand == HAND.two_hand) twoHandBow.GetComponent<BowKind>().ActivateAttack(false);
+        if (hand == HAND.left) swordL.GetComponent<SwordKind>().ActivateAttack(false);
+        if (hand == HAND.right) swordR.GetComponent<SwordKind>().ActivateAttack(false);
     }
 
 	public void AttackKick(int kickSide)
@@ -761,7 +766,7 @@ public class RPGCharacterController : MonoBehaviour
 
     public IEnumerator _DoubleWeapon()
     {
-        currentKind = KIND.demonic;
+        currentKind = ALIGN.demonic;
         animationSpeed = 10;
         yield return new WaitForSeconds(1.05f / animationSpeed);
         animationSpeed = 10;
@@ -820,12 +825,12 @@ public class RPGCharacterController : MonoBehaviour
     public IEnumerator _SwitchWeapon(int weaponNumber)
 	{	
 		//character is unarmed
-		if(weapon == Weapon.UNARMED)
+		if(weapon == Item.UNARMED)
 		{
 			StartCoroutine(_UnSheathWeapon(weaponNumber));
 		}
 		//character has 2 handed weapon
-		else if(weapon == Weapon.STAFF || weapon == Weapon.TWOHANDAXE || weapon == Weapon.TWOHANDBOW || weapon == Weapon.TWOHANDCROSSBOW || weapon == Weapon.TWOHANDSPEAR || weapon == Weapon.TWOHANDSWORD || weapon == Weapon.RIFLE || weapon == Weapon.TWOHANDCLUB)
+		else if(weapon == Item.STAFF || weapon == Item.TWOHANDAXE || weapon == Item.TWOHANDBOW || weapon == Item.TWOHANDCROSSBOW || weapon == Item.TWOHANDSPEAR || weapon == Item.TWOHANDSWORD || weapon == Item.RIFLE || weapon == Item.TWOHANDCLUB)
 		{
 			StartCoroutine(_SheathWeapon(leftWeapon, weaponNumber));
 			yield return new WaitForSeconds(1.1f / animationSpeed);
@@ -836,12 +841,12 @@ public class RPGCharacterController : MonoBehaviour
 			//switch to unarmed
 			else
 			{
-				weapon = Weapon.UNARMED;
+				weapon = Item.UNARMED;
 				animator.SetInteger("Weapon", 0);
 			}
 		}
 		//character has 1 or 2 1hand weapons and/or shield
-		else if(weapon == Weapon.ARMED)
+		else if(weapon == Item.ARMED)
 		{
 			//character is switching to 2 hand weapon or unarmed, put put away all weapons
 			if(weaponNumber < 7 || weaponNumber > 17 || weaponNumber == 20)
@@ -970,7 +975,7 @@ public class RPGCharacterController : MonoBehaviour
 			animator.SetInteger("LeftRight", 0);
 			animator.SetInteger("Weapon", 0);
 			animator.SetBool("Armed", false);
-			weapon = Weapon.UNARMED;
+			weapon = Item.UNARMED;
 		}
 		StartCoroutine(_WeaponVisibility(weaponNumber, 0.4f / animationSpeed, false));
 		StartCoroutine(_LockMovementAndAttack(0, 1));
@@ -989,7 +994,7 @@ public class RPGCharacterController : MonoBehaviour
 			animator.SetInteger("LeftRight", 3);
 		    if(weaponNumber == 4)
 			{
-				weapon = Weapon.TWOHANDBOW;
+				weapon = Item.TWOHANDBOW;
                 StartCoroutine(_WeaponVisibility(weaponNumber, 0.55f / animationSpeed, true));
 			}
 		}
@@ -1018,11 +1023,11 @@ public class RPGCharacterController : MonoBehaviour
 				}
 			}
 		}
-		if(weapon == Weapon.RIFLE)
+		if(weapon == Item.RIFLE)
 		{
 			animator.SetInteger("Weapon", 8);
 		}
-		else if(weapon == Weapon.TWOHANDCLUB)
+		else if(weapon == Item.TWOHANDCLUB)
 		{
 			animator.SetInteger("Weapon", 9);
 		}
@@ -1036,14 +1041,14 @@ public class RPGCharacterController : MonoBehaviour
 		if(leftWeapon == 7)
 		{
 			animator.SetBool("Shield", true);
-			weapon = Weapon.SHIELD;
+			weapon = Item.SHIELD;
 		}
-		if((leftWeapon > 6 || rightWeapon > 6) && weapon != Weapon.RIFLE && weapon != Weapon.TWOHANDCLUB)
+		if((leftWeapon > 6 || rightWeapon > 6) && weapon != Item.RIFLE && weapon != Item.TWOHANDCLUB)
 		{
 			animator.SetBool("Armed", true);
 			if(leftWeapon != 7)
 			{
-				weapon = Weapon.ARMED;
+				weapon = Item.ARMED;
 			}
 		}
 		//For dual blocking

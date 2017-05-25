@@ -41,7 +41,7 @@ namespace Assets.Scripts.Boss.Gabriel
                 {
                     Debug.Log("released Power");
                     if(gameObject.name == "Gabriel") Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.CINEMATIC;
-                    Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                    Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, ALIGN.none);
                     hasReleasedPower = true;
                     return TaskStatus.Running;
                 }

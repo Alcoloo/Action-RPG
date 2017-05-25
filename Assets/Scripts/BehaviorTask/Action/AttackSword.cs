@@ -21,7 +21,7 @@ public class AttackSword : Action {
         isComplete = false;
 
         if (target != null && weapon != null) {
-            target.Value.GetComponent<WeaponController>().activateWeaponAttack(HANDKIND.right, true);
+            target.Value.GetComponent<WeaponController>().activateWeaponAttack(HAND.right, true);
 
             if (horizontal) weapon.Value.GetComponent<Animator>().SetTrigger("attackHorizontal");
             else weapon.Value.GetComponent<Animator>().SetTrigger("attackVertical");
@@ -36,7 +36,7 @@ public class AttackSword : Action {
     }
 
     void animationComplete() {
-        target.Value.GetComponent<WeaponController>().activateWeaponAttack(HANDKIND.right, false);
+        target.Value.GetComponent<WeaponController>().activateWeaponAttack(HAND.right, false);
         isComplete = true;
     }
 }

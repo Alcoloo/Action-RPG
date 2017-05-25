@@ -48,7 +48,7 @@ public class AreaAttack : MonoBehaviour {
 
     void OnTriggerStay (Collider other) {
         if (other.name == player.name && !damageDeal) {
-            player.GetComponent<Caracteristic>().TakeDamage(damage, Rpg.KIND.both);
+            player.GetComponent<Caracteristic>().TakeDamage(damage, Rpg.ALIGN.both);
             damageDeal = true;
         }
     }

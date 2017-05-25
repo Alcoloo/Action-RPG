@@ -15,7 +15,7 @@ namespace Rpg.Controller
         
       
         [SerializeField]
-        public GunKind curentShooter;
+        public BowKind curentShooter;
         [SerializeField]
         public List<SwordKind> swords;
         [SerializeField]
@@ -42,13 +42,13 @@ namespace Rpg.Controller
             base.DoAcTion();
         }
 
-        public void activateWeaponAttack(HANDKIND hand,bool state)
+        public void activateWeaponAttack(HAND hand,bool state)
         {
-            if(hand == HANDKIND.left)
+            if(hand == HAND.left)
             {
                 leftHand.ActivateAttack(state);
             }
-            else if(hand == HANDKIND.right)
+            else if(hand == HAND.right)
             {
                 rightHand.ActivateAttack(state);
             }

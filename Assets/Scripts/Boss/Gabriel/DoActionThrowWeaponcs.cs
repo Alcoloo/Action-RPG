@@ -47,7 +47,7 @@ namespace Assets.Scripts.Boss.Gabriel
 
                 if (Vector3.Distance(weapon.transform.position, Player.instance.transform.position) <= _minDistance)
                 {
-                    Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                    Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, ALIGN.none);
                     DoActionReplace();
                 }
                 else if (Vector3.Distance(weapon.transform.position, endPos) <= _minDistance) DoActionReplace();

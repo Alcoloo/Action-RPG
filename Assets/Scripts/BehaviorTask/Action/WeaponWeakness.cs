@@ -12,7 +12,7 @@ public class WeaponWeakness : Action
     public SharedGameObject target = null;
 
     [BehaviorDesigner.Runtime.Tasks.Tooltip("Align Weakness")]
-    public KIND align = KIND.both;
+    public ALIGN align = ALIGN.both;
 
     public override void OnStart()
 	{

@@ -16,8 +16,8 @@ namespace Rpg.Manager
         public string WeaponName;
 
         public int damage;
-        public HANDKIND hand;
-        public KIND align;
+        public HAND hand;
+        public ALIGN align;
     }
 
     [System.Serializable]

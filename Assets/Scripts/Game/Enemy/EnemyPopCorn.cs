@@ -22,7 +22,7 @@ public class EnemyPopCorn : Enemy {
         nav.speed = speed;
         //GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = player.transform;
         //SetModeChargePlayer();
-        GetComponent<WeaponController>().activateWeaponAttack(Rpg.HANDKIND.right, true);
+        GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, true);
 	}
 
 
