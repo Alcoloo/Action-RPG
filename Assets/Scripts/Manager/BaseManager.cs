@@ -39,12 +39,9 @@
                 GameManager.manager.onPlay.AddListener(Play);
                 GameManager.manager.onGameOver.AddListener(GameOver);
             }
-            else Debug.LogError("BaseManager " + name + " tells you: NO GameManager");
-
-            StartCoroutine(CoroutineStart());
+            //else Debug.LogError("BaseManager " + name + " tells you: NO GameManager");
+            
         }
-
-        protected abstract IEnumerator CoroutineStart();
 
         // Update is called once per frame
         protected virtual void Play()

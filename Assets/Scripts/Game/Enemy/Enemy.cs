@@ -37,24 +37,25 @@ public class Enemy : MonoBehaviour {
     protected WeaponController weapon;
     #endregion
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         //pour eviter le "find" le manager envera le gameObject Player au enemy
         player = GameObject.FindGameObjectWithTag("Player").transform;
         myRigidbody = GetComponent<Rigidbody>();
         nav = GetComponent<NavMeshAgent>();
         myMesh = GetComponent<MeshRenderer>();
-        healthBar = transform.FindChild("HealthBarBackground").gameObject;
+        healthBar = transform.FindChild("HealthComponent").gameObject;
         healthBarScript = healthBar.GetComponent<HealthRotation>();
         if(GetComponent<WeaponController>()) weapon = GetComponent<WeaponController>();
     }
     // Use this for initialization
-    void Start()
+    public virtual void Start()
     {
+        if (gameObject.name != "EnemyPopCorn") Init();
         DoAction = DoActionVoid;
     }
 
-    public void init()
+    public void Init()
     {
         if(carac == null) carac = EnemyCarac.instance.getEnemy(gameObject.name);
         if (carac != null)
@@ -70,7 +71,7 @@ public class Enemy : MonoBehaviour {
             Caracteristic lCarac = getCaracComponent(transform.gameObject);
             lCarac.setCarac(carac.life, carac.life, carac.armor);
             lCarac.isHit.AddListener(setHit);
-            lCarac.isDeath.AddListener(SetModeDie); 
+            lCarac.isDeath.AddListener(SetModeDie);
         }
         if(healthBar != null) healthBar.SetActive(false);
     }
@@ -147,11 +148,11 @@ public class Enemy : MonoBehaviour {
         if (CustomTimer.manager.isTime(startTime, hurtDuration)) SetModeChargePlayer();
     }
 
-    protected void SetModeDie() { DoAction = DoActionDie; }
+    protected void SetModeDie() { gameObject.SetActive(false); }
     
     protected void DoActionDie()
     {
-        Destroy();
+        //Destroy();
         //si l'animation de mort et fini destroy()
     }
 
@@ -172,9 +173,28 @@ public class Enemy : MonoBehaviour {
     }
     #endregion
 
+    public void playerAnimationTest()
+    {
+        int run = Animator.StringToHash("run");
+        GetComponentInChildren<Animator>().SetTrigger(run);
+    }
+
     #region test
     public bool isDetected() { return (playerDistance < detectionRange); }
 
     public bool isOnAttackRange() { return (playerDistance < attackDistance); }
+    #endregion
+
+    #region attackCoolDown
+    public void SetStartTime()
+    {
+        startTime = CustomTimer.manager.elapsedTime;
+    }
+
+    public float GetStartTime()
+    {
+        if (startTime != 0f) return startTime;
+        else return 0f;
+    }
     #endregion
 }

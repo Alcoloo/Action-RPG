@@ -25,7 +25,7 @@ namespace Assets.Scripts.Boss.Gabriel
 
         public override void OnStart()
         {
-            startPowerTime = CustomTimer.instance.elapsedTime;
+            startPowerTime = CustomTimer.manager.elapsedTime;
             hasReleasedPower = false;
             cara = GetComponent<Caracteristic>();
             startHP = cara.pv;
@@ -37,10 +37,10 @@ namespace Assets.Scripts.Boss.Gabriel
             currentHP = cara.pv;
             if(!hasReleasedPower)
             {
-                if (CustomTimer.instance.isTime(startPowerTime, chargePowerTime))
+                if (CustomTimer.manager.isTime(startPowerTime, chargePowerTime))
                 {
                     Debug.Log("released Power");
-                    Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.CINEMATIC;
+                    if(gameObject.name == "Gabriel") Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.CINEMATIC;
                     Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
                     hasReleasedPower = true;
                     return TaskStatus.Running;
@@ -54,10 +54,12 @@ namespace Assets.Scripts.Boss.Gabriel
             }
             else
             {
+                transform.LookAt(Player.instance.transform);
                 transform.position = Vector3.MoveTowards(transform.position, Player.instance.transform.position + Vector3.up, Time.deltaTime * speed);
                 if (Vector3.Distance(transform.position, Player.instance.transform.position) <= _minDistance)
                 {
                     Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.DEFAULT;
+                    hasReleasedPower = false;
                     return TaskStatus.Success;
                 }
                 else return TaskStatus.Running;

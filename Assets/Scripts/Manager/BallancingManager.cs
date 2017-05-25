@@ -24,20 +24,22 @@ namespace Rpg.Manager
     public class GunCarac : WeaponCarac
     {
         public GameObject shoot;
+        public Transform transformToInstantiate;
     }
 
-    public class BaseCarac
+    public class BaseCharacCarac
     {
         public string name;
-
+        [Header("Life and Dmg")]
         public int Pv;
         public int MaxPv;
         public int armor;
     }
 
     [System.Serializable]
-    public class PlayerCarac : BaseCarac
+    public class PlayerCarac : BaseCharacCarac
     {
+        [Header("Speeds")]
         public int maxJumpSpeed;
         public int maxInAirSpeed;
         public int rollSpeed;
@@ -45,12 +47,26 @@ namespace Rpg.Manager
         public int runSpeed;
     }
 
+   
     [System.Serializable]
-    public class BossCarac : BaseCarac
-    {
-       // mettez les caracteristique des boss ici
-    }
+    public class EnemyCarac : BaseCharacCarac{
 
+        [Header("Range")]
+        public float detectionRange;
+        public float attackDistance;
+        [Header("Speed")]
+        public float rotationSpeed;
+        public float attackMovementSpeed;
+        public float speed;
+        [Header("Timer")]
+        public float hurtDuration;
+        public float attackDuration;
+    }
+    [System.Serializable]
+    public class BossCarac : EnemyCarac
+    {
+        // mettez les caracteristique des boss ici
+    }
     public class BallancingManager : BaseManager<BallancingManager>
     {
         [Header("Weapons")]
@@ -61,6 +77,9 @@ namespace Rpg.Manager
         [Header("Player")]
         [SerializeField]
         private PlayerCarac _player = new PlayerCarac();
+        [Header("Enemy")]
+        [SerializeField]
+        private List<EnemyCarac> enemyList = new List<EnemyCarac>(); 
         [Header("Boss")]
         [SerializeField]
         private List<BossCarac> bossList = new List<BossCarac>();
@@ -78,10 +97,6 @@ namespace Rpg.Manager
         protected void Update()
         {
 
-        }
-        protected override IEnumerator CoroutineStart()
-        {
-            throw new NotImplementedException();
         }
 
         public WeaponCarac getSwordCarac(string pName)
@@ -101,6 +116,14 @@ namespace Rpg.Manager
             }
             return null;
         }
+        public EnemyCarac getEnemyCarac(string pName)
+        {
+            foreach (EnemyCarac enemy in enemyList)
+            {
+                if (enemy.name == pName) return enemy;
+            }
+            return null;
+        }
         public BossCarac getBossCarac(string pName)
         {
             foreach (BossCarac boss in bossList)
@@ -109,7 +132,5 @@ namespace Rpg.Manager
             }
             return null;
         }
-
-
     }
 }

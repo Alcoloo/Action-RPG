@@ -72,10 +72,10 @@ public class DialogueManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (Input.GetButtonDown("AttackR") && !isDialog) {
+        if (ControllerInput.manager.interact && !isDialog) {
             Init();
         }
-        if (Input.GetButtonDown("AttackR") && coroutineIsFinish) {
+        if (ControllerInput.manager.interact && coroutineIsFinish) {
             UpdateDialogueText();
         }
 	}

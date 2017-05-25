@@ -24,13 +24,13 @@ namespace Rpg.Controller
         public Weapon leftHand;
         public Weapon rightHand;
 
-        public BaseGameEvent weaponHit;
+        
 
 
         protected override void AwakeController()
         {
             base.AwakeController();
-            weaponHit = new BaseGameEvent();
+
         }
         protected override void InitController()
         {
@@ -58,13 +58,5 @@ namespace Rpg.Controller
                 rightHand.ActivateAttack(state);
             }
         }
-
-        public void IncreaseCombo()
-        {
-            weaponHit.Invoke();
-        }
-
-
-
     }
 }

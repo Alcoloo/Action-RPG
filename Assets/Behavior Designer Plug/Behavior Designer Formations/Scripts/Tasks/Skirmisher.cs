@@ -19,6 +19,14 @@ namespace BehaviorDesigner.Runtime.Formations.Tasks
 
         private List<Vector3> offsets = new List<Vector3>();
 
+        private Enemy enemyScript;
+
+
+        public override void OnStart()
+        {
+            base.OnStart();
+            enemyScript = GetComponent<Enemy>();
+        }
         protected override void AddAgentToGroup(Behavior agent, int index)
         {
             base.AddAgentToGroup(agent, index);
@@ -29,6 +37,12 @@ namespace BehaviorDesigner.Runtime.Formations.Tasks
                 offset.Set(Random.Range(minSeparation.Value.x, maxSeparation.Value.x), 0, Random.Range(minSeparation.Value.y, maxSeparation.Value.y));
             }
             offsets.Add(offset);
+        }
+
+        public override TaskStatus OnUpdate()
+        {
+            if (enemyScript.isOnAttackRange()) return TaskStatus.Success;
+            return base.OnUpdate();
         }
 
         protected override int RemoveAgentFromGroup(Behavior agent)

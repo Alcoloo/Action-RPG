@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Rpg;
 
 public class ThirdPersonOrbitCam : MonoBehaviour 
 {
@@ -11,6 +12,10 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	public float verticalAimingSpeed = 400f;                           // Vertical turn speed.
 	public float maxVerticalAngle = 30f;                               // Camera max clamp angle. 
 	public float minVerticalAngle = -60f;                              // Camera min clamp angle.
+    public float FOVFactor = 5f;
+    public float _minDistance;
+    public float _maxDistance;
+    public Transform currentBoss;
 
 	private float angleH = 0;                                          // Float to store camera horizontal angle related to mouse movement.
 	private float angleV = 0;                                          // Float to store camera vertical angle related to mouse movement.
@@ -24,6 +29,10 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	private float defaultFOV;                                          // Default camera Field of View.
 	private float targetFOV;                                           // Target camera FIeld of View.
 	private float targetMaxVerticalAngle;                              // Custom camera max vertical clamp angle. 
+    private Quaternion aimRotation;
+    private Quaternion camYRotation;
+    private delegate void Action();
+    private Action doAction; 
 
 	void Awake()
 	{
@@ -46,6 +55,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		ResetTargetOffsets ();
 		ResetFOV ();
 		ResetMaxVerticalAngle();
+        doAction = DoActionBase;
 	}
 
 	void LateUpdate()
@@ -59,8 +69,8 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		angleV = Mathf.Clamp(angleV, minVerticalAngle, targetMaxVerticalAngle);
 
 		// Set camera orientation..
-		Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
-		Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
+		camYRotation = Quaternion.Euler(0, angleH, 0);
+		aimRotation = Quaternion.Euler(-angleV, angleH, 0);
 		cam.rotation = aimRotation;
 
 		// Set FOV.
@@ -82,11 +92,59 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
 		smoothCamOffset = Vector3.Lerp(smoothCamOffset, noCollisionOffset, smooth * Time.deltaTime);
 
-		cam.position =  player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+        doAction();
+		
 	}
+    #region DoAction
+    private void DoActionBase()
+    {
+        cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+    }
 
-	// Set camera offsets to custom values.
-	public void SetTargetOffsets(Vector3 newPivotOffset, Vector3 newCamOffset)
+    private void DoActionBow()
+    {
+        Transform targetPos = EnemyManager.instance.ennemyNear[0].transform;
+        Vector3 camTarget = (player.position - targetPos.position).normalized * (player.position - targetPos.position).magnitude / 2;
+        cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+        transform.LookAt(camTarget);
+    }
+
+    private void DoActionBoss()
+    {
+        Vector3 camTarget = (currentBoss.position - player.position).normalized * (currentBoss.position - player.position).magnitude / 2;
+        float newFOV = Vector3.Distance(player.position, currentBoss.position) * FOVFactor;
+        if (newFOV >= _maxDistance) targetFOV = newFOV;
+        else
+        {
+            targetFOV = defaultFOV;
+            Vector3 lerpPos = Vector3.Lerp(transform.position, camTarget,Time.deltaTime * 0.5f);
+        }
+        cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+        
+    }
+
+    
+    #endregion
+
+    #region SetMode
+    public void SetModeBase()
+    {
+        doAction = DoActionBase;
+    }
+
+    public void SetModeBow()
+    {
+        doAction = DoActionBow;
+    }
+
+    public void SetModeBoss()
+    {
+        doAction = DoActionBoss;
+    }
+    #endregion
+
+    // Set camera offsets to custom values.
+    public void SetTargetOffsets(Vector3 newPivotOffset, Vector3 newCamOffset)
 	{
 		targetPivotOffset = newPivotOffset;
 		targetCamOffset = newCamOffset;

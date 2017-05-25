@@ -10,7 +10,7 @@ public class EnemyTank : Enemy {
 
     void Start () {
         tree = GetComponent<BehaviorTree>();
-        init();
+        Init();
         SetModePatrol();
 	}
 

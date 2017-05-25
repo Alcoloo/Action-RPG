@@ -44,11 +44,6 @@ namespace Rpg
 
         }
 
-        protected override IEnumerator CoroutineStart()
-        {
-            throw new NotImplementedException();
-        }
-
         protected void Start()
         {
 
@@ -67,6 +62,7 @@ namespace Rpg
         public void LoadNextScene(string pSceneName)
         {
             loadingCanvas.SetActive(true);
+            PoolingManager.manager.resetPool();
             StartCoroutine(LoadALevel(pSceneName));
         }
 

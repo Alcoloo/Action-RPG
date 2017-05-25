@@ -21,13 +21,13 @@ namespace Assets.Scripts.Boss.Gabriel
 
         public override void OnStart()
         {
-            startChargeRush = CustomTimer.instance.elapsedTime;
+            startChargeRush = CustomTimer.manager.elapsedTime;
             endPos = Player.instance.transform.position + Vector3.up;
         }
 
         public override TaskStatus OnUpdate()
         {
-            if (CustomTimer.instance.isTime(startChargeRush, chargeRush))
+            if (CustomTimer.manager.isTime(startChargeRush, chargeRush))
             {
                 transform.LookAt(Player.instance.transform);
                 Vector3 startPos = transform.position;

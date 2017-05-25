@@ -65,7 +65,7 @@ namespace Rpg.Characters
                 isDeath.Invoke();
                 return;
             }
-            //isHit.Invoke(_pv,_maxPv);
+            isHit.Invoke(_pv,_maxPv);
         } 
 
         public void Heal(int healPoint)
@@ -111,12 +111,7 @@ namespace Rpg.Characters
         {
             /// mettre une potentielle formule de calcul des caracteristiques si on part sur d'autre type de carcterstiques ^^  
         }
-        IEnumerator CotoDamage()
-        {
-            yield return new WaitForSeconds(2.0f);
-            TakeDamage(1,KIND.angelic);
-            StartCoroutine(CotoDamage());
-        }
+
         public void setAlign(KIND pAlign)
         {
             align = pAlign;

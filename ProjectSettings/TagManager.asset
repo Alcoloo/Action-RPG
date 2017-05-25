@@ -7,6 +7,10 @@ TagManager:
   - Collide
   - Ennemy
   - Intro
+  - AtkUpgrade
+  - HPUpgrade
+  - ArmorUpgrade
+  - portal
   layers:
   - Default
   - TransparentFX
@@ -17,9 +21,9 @@ TagManager:
   - 
   - 
   - Player
-  - 
-  - 
-  - 
+  - player Weapon
+  - Enemy
+  - Enemy Weapon
   - 
   - 
   - 

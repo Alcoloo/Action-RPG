@@ -18,6 +18,7 @@ namespace Assets.Scripts.Boss.Gabriel
         public int _hitFactor;
         public int _maxHitPattern;
         public float _patternTime;
+        public float attackTime;
 
         private Caracteristic cara;
         private int hitCount;
@@ -27,7 +28,7 @@ namespace Assets.Scripts.Boss.Gabriel
         {
             cara = GetComponent<Caracteristic>();
             cara.isHit.AddListener(UpgradeHitCount);
-            startPatternTime = CustomTimer.instance.elapsedTime;
+            startPatternTime = CustomTimer.manager.elapsedTime;
         }
 
         public override TaskStatus OnUpdate()
@@ -37,8 +38,9 @@ namespace Assets.Scripts.Boss.Gabriel
             {
                 if (hitCount % _hitFactor == 0 && hitCount != 0) DoBasicAttack();
                 else if (hitCount >= _maxHitPattern) return TaskStatus.Success;
+                if (CustomTimer.manager.isTime(startPatternTime, attackTime)) DoBasicAttack();
             }
-            else if (CustomTimer.instance.isTime(startPatternTime, _patternTime)) return TaskStatus.Success;
+            else if (CustomTimer.manager.isTime(startPatternTime, _patternTime)) return TaskStatus.Success;
             else transform.position = Vector3.MoveTowards(transform.position, Player.instance.transform.position + Vector3.up, Time.deltaTime * _speed);
             return TaskStatus.Running;
         }

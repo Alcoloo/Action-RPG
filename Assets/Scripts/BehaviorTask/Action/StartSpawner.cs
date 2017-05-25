@@ -3,7 +3,7 @@ using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using Rpg;
 
-namespace rpg
+namespace Rpg
 {
     public class StartSpawner : Action
     {
@@ -14,23 +14,23 @@ namespace rpg
 
         public override void OnStart()
 	    {
-            startSummon = CustomTimer.instance.elapsedTime;
+            startSummon = CustomTimer.manager.elapsedTime;
         }
 
 	    public override TaskStatus OnUpdate()
 	    {
-            if (CustomTimer.instance.isTime(startSummon, SummonTime))
+            if (CustomTimer.manager.isTime(startSummon, SummonTime))
             {
                 if (startSpawnerTime == 0)
                 {
-                    startSpawnerTime = CustomTimer.instance.elapsedTime;
-                    EnemyManager.instance.startSpawners();
+                    startSpawnerTime = CustomTimer.manager.elapsedTime;
+                    EnemyManager.manager.startSpawners();
                     return TaskStatus.Success;
                 }
-                else if (CustomTimer.instance.isTime(startSpawnerTime, EnemyManager.instance.spawnerCooldown) && EnemyManager.instance.IsNotTooMuchPopCorn())
+                else if (CustomTimer.manager.isTime(startSpawnerTime, EnemyManager.manager.spawnerCooldown) && EnemyManager.manager.IsNotTooMuchPopCorn())
                 {
-                    startSpawnerTime = CustomTimer.instance.elapsedTime;
-                    EnemyManager.instance.startSpawners();
+                    startSpawnerTime = CustomTimer.manager.elapsedTime;
+                    EnemyManager.manager.startSpawners();
                     return TaskStatus.Success;
                 }
                 else return TaskStatus.Failure;
