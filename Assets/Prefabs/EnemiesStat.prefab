@@ -19,9 +19,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4674731801992992}
-  - component: {fileID: 114026140222910530}
+  - component: {fileID: 114851574704942216}
   m_Layer: 0
-  m_Name: EnemyCarac
+  m_Name: EnemiesStat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114026140222910530
+--- !u!114 &114851574704942216
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -48,37 +48,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 1372951518397644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95e9ff524852e1b4ab3cc86ae26aef37, type: 3}
+  m_Script: {fileID: 11500000, guid: 4abdb91276dc3694b9d46806b86e4341, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   listEnemy:
   - EnemyName: EnemyPopCorn
-    life: 20
-    armor: 0
-    detectionRange: 20
-    attackDistance: 3
-    rotationSpeed: 0
-    attackMovementSpeed: 10
-    speed: 10
-    hurtDuration: 3
-    attackDuration: 2
+    m_health: 20
+    m_armor: 0
+    m_detectionRange: 20
+    m_attackDistance: 3
+    m_rotationSpeed: 0
+    m_attackMovementSpeed: 10
+    m_speed: 10
+    m_hurtDuration: 3
+    m_attackDuration: 2
   - EnemyName: EnemySummoner
-    life: 300
-    armor: 0
-    detectionRange: 20
-    attackDistance: 3
-    rotationSpeed: 0
-    attackMovementSpeed: 10
-    speed: 8
-    hurtDuration: 1
-    attackDuration: 2
+    m_health: 300
+    m_armor: 0
+    m_detectionRange: 20
+    m_attackDistance: 3
+    m_rotationSpeed: 0
+    m_attackMovementSpeed: 10
+    m_speed: 8
+    m_hurtDuration: 1
+    m_attackDuration: 2
   - EnemyName: EnemyTank
-    life: 800
-    armor: 200
-    detectionRange: 15
-    attackDistance: 0
-    rotationSpeed: 0
-    attackMovementSpeed: 2
-    speed: 1
-    hurtDuration: 3
-    attackDuration: 2
+    m_health: 800
+    m_armor: 200
+    m_detectionRange: 15
+    m_attackDistance: 0
+    m_rotationSpeed: 0
+    m_attackMovementSpeed: 2
+    m_speed: 1
+    m_hurtDuration: 3
+    m_attackDuration: 2

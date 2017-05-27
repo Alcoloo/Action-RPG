@@ -31,7 +31,7 @@ namespace Assets.Scripts.Boss.Gabriel
 
             if (Vector3.Distance(transform.position, Player.instance.transform.position) <= _minDistance)
             {
-                Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, ALIGN.none);
                 DestroyObject();
             }
             else if (Vector3.Distance(transform.position, endPos) <= _minDistance) DestroyObject();

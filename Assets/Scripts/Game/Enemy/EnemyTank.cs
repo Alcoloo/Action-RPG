@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Rpg.Controller;
+using Rpg.GraphicElement;
+using Rpg;
+
 
 public class EnemyTank : Enemy {
 
@@ -18,7 +22,7 @@ public class EnemyTank : Enemy {
     {
         //nav.Stop();
         tree.EnableBehavior();
-        nav.speed = speed;
+        nav.speed = template.speed;
         DoAction = DoActionPatrol;
     }
 

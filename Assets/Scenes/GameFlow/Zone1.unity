@@ -1391,14 +1391,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentEnnemyAimedIndex: 0
-  _weaponAsset: bow
-  _align: 0
-  hand: 2
-  _weaponController: {fileID: 2144421175}
-  _unavailableTag: Ennemy
-  _attack: 10
-  bulletTemplate: {fileID: 1672555982810128, guid: 803ffa671169f6e47974e44e0071d04a,
-    type: 2}
+  m_unavailableTag: 
+  m_weaponAsset: 
+  m_align: 0
+  _bulletTemplate: {fileID: 0}
   transformToInstantiate: {fileID: 0}
   radiusDetect: 0
   viewAngle: 0
@@ -1488,15 +1484,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baa73629d83df904c8941e432feadb88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 1299021152}
   OnDeath:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  weapon: {fileID: 0}
-  camera: {fileID: 1299021152}
   animEnded: 0
-  currentWeapon: {fileID: 0}
 --- !u!1 &1023575387
 GameObject:
   m_ObjectHideFlags: 0
@@ -2211,6 +2205,16 @@ Prefab:
         type: 2}
       propertyPath: poolObjectList.Array.data[0].poolSize
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114013531666690728, guid: bc1c2a489fc4a1246b08deebf4950d94,
+        type: 2}
+      propertyPath: poolObjectList.Array.data[1].poolObject
+      value: 
+      objectReference: {fileID: 100000, guid: 1f64829979706394d98b1060ef20f747, type: 2}
+    - target: {fileID: 114013531666690728, guid: bc1c2a489fc4a1246b08deebf4950d94,
+        type: 2}
+      propertyPath: poolObjectList.Array.data[1].poolSize
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: bc1c2a489fc4a1246b08deebf4950d94, type: 2}
@@ -4269,7 +4273,28 @@ Prefab:
       propertyPath: _unavailableTag
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 114288758123169674, guid: 4290d24a113cbba43be36e0aa3f1b94f,
+        type: 2}
+      propertyPath: _bulletTemplate
+      value: 
+      objectReference: {fileID: 100000, guid: 1f64829979706394d98b1060ef20f747, type: 2}
+    - target: {fileID: 114288758123169674, guid: 4290d24a113cbba43be36e0aa3f1b94f,
+        type: 2}
+      propertyPath: radiusDetect
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114288758123169674, guid: 4290d24a113cbba43be36e0aa3f1b94f,
+        type: 2}
+      propertyPath: viewAngle
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 114288758123169674, guid: 4290d24a113cbba43be36e0aa3f1b94f,
+        type: 2}
+      propertyPath: m_unavailableTag
+      value: Player
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114443918243228190, guid: 4290d24a113cbba43be36e0aa3f1b94f, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4290d24a113cbba43be36e0aa3f1b94f, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &1697151149 stripped

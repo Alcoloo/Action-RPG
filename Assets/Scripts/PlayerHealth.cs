@@ -62,7 +62,6 @@
 
             if (currentHealth == 0 && !isDead)
             {
-                Player.instance.OnGameOver();
                 Destroy(gameObject);
                 gameOver.SetActive(true);
                 isDead = true;

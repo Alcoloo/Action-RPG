@@ -25,7 +25,7 @@ public class BasicAttack : Action
         if (enemyScript.isOnAttackRange()) isOnRange = true;
         else
         {
-            GetComponent<WeaponController>().activateWeaponAttack(Rpg.HANDKIND.right, false);
+            GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, false);
             isOnRange = false;
         }
         base.OnStart();
@@ -47,7 +47,7 @@ public class BasicAttack : Action
             if (!isOnAttack)
             {
                 isOnAttack = true;
-                GetComponent<WeaponController>().activateWeaponAttack(Rpg.HANDKIND.right, true);
+                GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, true);
                 StartCoroutine(attackCoroutine());
             }
             return TaskStatus.Running;
@@ -65,7 +65,7 @@ public class BasicAttack : Action
         currentAnimationTime = 0;
         isOnAttack = false;
         isAttacked = true;
-        GetComponent<WeaponController>().activateWeaponAttack(Rpg.HANDKIND.right, false);
+        GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, false);
     }
 }
 

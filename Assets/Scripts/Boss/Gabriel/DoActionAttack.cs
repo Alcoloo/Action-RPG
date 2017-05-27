@@ -23,7 +23,7 @@ namespace Assets.Scripts.Boss.Gabriel
             float distanceToTarget = Vector3.Distance(transform.position, Player.instance.transform.position);
             if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2 && distanceToTarget < radius)
             {
-                Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, KIND.none);
+                Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, ALIGN.none);
                 return TaskStatus.Success;
             }
             else return TaskStatus.Success;

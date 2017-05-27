@@ -11,7 +11,10 @@ namespace Rpg.Characters
     
     public class HealthEvent : UnityEvent<int,int>
     {
-
+        void isHit(int _pv, int _maxpv)
+        {
+            
+        }
     }
     public enum TOUCHABLESTATE { god, normal }
     public class Caracteristic : MonoBehaviour
@@ -23,7 +26,7 @@ namespace Rpg.Characters
         [SerializeField]
         private int _armor = 2;
         [SerializeField]
-        private KIND align = KIND.both;
+        private ALIGN align = ALIGN.both;
         [SerializeField]
         private TOUCHABLESTATE state = TOUCHABLESTATE.normal;
 
@@ -83,22 +86,22 @@ namespace Rpg.Characters
             _maxPv = maxPv;
         }
 
-        public void TakeDamage(int pAttackPoint, KIND pAlign)
+        public void TakeDamage(int pAttackPoint, ALIGN pAlign)
         {
             if (state == TOUCHABLESTATE.god) return;
             if (_pv <= 0) return;
 
             switch (align)
             {
-                case KIND.both:
+                case ALIGN.both:
                     break;
-                case KIND.angelic:
-                    if (pAlign != KIND.angelic) return;
+                case ALIGN.angelic:
+                    if (pAlign != ALIGN.angelic) return;
                     break;
-                case KIND.demonic:
-                    if (pAlign != KIND.demonic) return;
+                case ALIGN.demonic:
+                    if (pAlign != ALIGN.demonic) return;
                     break;
-                case KIND.none:
+                case ALIGN.none:
                     return;    
             }
              
@@ -112,7 +115,7 @@ namespace Rpg.Characters
             /// mettre une potentielle formule de calcul des caracteristiques si on part sur d'autre type de carcterstiques ^^  
         }
 
-        public void setAlign(KIND pAlign)
+        public void setAlign(ALIGN pAlign)
         {
             align = pAlign;
         }
@@ -120,7 +123,7 @@ namespace Rpg.Characters
         {
             state = pState;
         }
-        public void setCarac(int pv,int maxpv, int armor, KIND align = KIND.both, TOUCHABLESTATE state = TOUCHABLESTATE.normal)
+        public void setCarac(int pv,int maxpv, int armor, ALIGN align = ALIGN.both, TOUCHABLESTATE state = TOUCHABLESTATE.normal)
         {
             _pv = pv;
             _maxPv = maxpv;

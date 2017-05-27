@@ -4,9 +4,8 @@ using UnityEngine.Events;
 
 namespace Rpg
 {
-    public enum KIND { angelic, demonic , both, none };
-    public enum WEAPONKIND { sword, gun };
-    public enum HANDKIND { right, left, two_hand };
+    public enum ALIGN { angelic, demonic , both, none };
+    public enum HAND { right, left, two_hand };
     public class WeaponCreationEvent : UnityEvent<Weapon>
     {
 
@@ -17,88 +16,38 @@ namespace Rpg
     public abstract class Weapon : MonoBehaviour
     {
         public int currentEnnemyAimedIndex;
+        
         [SerializeField]
-        protected string _weaponAsset;
-        [SerializeField]
-        protected KIND _align;
-        [SerializeField]
-        protected HANDKIND hand;
-        [SerializeField]
-        protected WeaponController _weaponController;
-        [SerializeField]
-        protected string _unavailableTag;
-        [SerializeField]
-        protected int _attack = 10;
+        protected string m_unavailableTag;
 
+        protected int m_damage = 10;
         protected bool _isAttack = false;
+
+        [SerializeField]
+        protected string m_weaponAsset;
         public string weaponAsset
         {
-            get { return _weaponAsset; }
+            get { return m_weaponAsset; }
         }
-        public KIND align
+
+        [SerializeField]
+        protected ALIGN m_align;
+        public ALIGN align
         {
-            get { return _align; }
+            get { return m_align; }
         }
-        public WeaponController weaponController
-        {
-            get { return _weaponController; }
-        }
+
         protected void Start()
         {
-            Init();
+
         }
         protected void Update()
         {
-            DoAction();
         }
-
-        protected virtual void Init()
-        {
-            
-        }
-        public virtual void DoAction()
-        {
-
-        }
-        public  void ActivateAttack(bool state)
+        
+        public void ActivateAttack(bool state)
         {
             _isAttack = state;
         }
-        protected void AssignHand()
-        {
-            if(hand == HANDKIND.left)
-            {
-                weaponController.leftHand = this;
-            }
-            else if (hand == HANDKIND.right)
-            {
-               
-                weaponController.rightHand = this;
-            }
-        }
-        protected void RemoveHand()
-        {
-            if (hand == HANDKIND.left)
-            {
-                if (weaponController.leftHand == this)
-                {
-                    weaponController.leftHand = null;
-                    return;
-                }
-            }
-            else if (hand == HANDKIND.right)
-            {
-                if (weaponController.rightHand == this)
-                {
-                    weaponController.rightHand = null;
-                    return;
-                }
-            }
-        }
-
-
-       
-
-
     }
 }
