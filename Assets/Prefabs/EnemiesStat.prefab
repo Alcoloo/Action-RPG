@@ -33,9 +33,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1372951518397644}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.9659258, y: -0, z: -0, w: 0.2588191}
+  m_LocalPosition: {x: -0.21000001, y: 0.21985435, z: 14.29893}
+  m_LocalScale: {x: 0.33333334, y: 0.27083334, z: 0.3125}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -75,6 +75,16 @@ MonoBehaviour:
   - EnemyName: EnemyTank
     m_health: 800
     m_armor: 200
+    m_detectionRange: 15
+    m_attackDistance: 0
+    m_rotationSpeed: 0
+    m_attackMovementSpeed: 2
+    m_speed: 1
+    m_hurtDuration: 3
+    m_attackDuration: 2
+  - EnemyName: EnemyBase
+    m_health: 20
+    m_armor: 0
     m_detectionRange: 15
     m_attackDistance: 0
     m_rotationSpeed: 0

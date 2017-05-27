@@ -23,7 +23,11 @@
         //Apparition des bouttons de niveau et disparition du bouton Start
         protected override void Play()
         {
-            ScenesManager.instance.LoadNextScene("Intro");
+            if (ScenesManager.manager != null)
+            {
+                //ScenesManager.instance.LoadNextScene("Intro");
+                ScenesManager.manager.changeScene();
+            }
         }
 
         //Apparition du boutton Start et disparition des bouttons de niveau

@@ -5,7 +5,7 @@ using Rpg;
 
 public class SimpleShoot : Action
 {
-    private Enemy enemyScript;
+    private EnemySummoner enemyScript;
 
     private bool isShooting = false;
     private float startTime = 0;
@@ -15,7 +15,7 @@ public class SimpleShoot : Action
 
     public override void OnStart()
 	{
-        enemyScript = GetComponent<Enemy>();
+        enemyScript = GetComponent<EnemySummoner>();
     }
 
 	public override TaskStatus OnUpdate()
@@ -23,9 +23,10 @@ public class SimpleShoot : Action
         if(!isShooting)
         {
             enemyScript.lookPlayer();
-            enemyScript.createShoot();
+            enemyScript.CreateShoot();
             isShooting = true;
             startTime = CustomTimer.manager.elapsedTime;
+            enemyScript.ChangeAnimationState("shoot");
             return TaskStatus.Running;
         }
         else

@@ -58,11 +58,15 @@ namespace Rpg
         {
             LoadNextScene(getNextScene(SceneManager.GetActiveScene().name));
         }
+        public void reloadScene()
+        {
+            LoadNextScene(SceneManager.GetActiveScene().name);
+        }
 
         public void LoadNextScene(string pSceneName)
         {
             loadingCanvas.SetActive(true);
-            PoolingManager.manager.resetPool();
+            if(PoolingManager.manager != null) PoolingManager.manager.resetPool();
             StartCoroutine(LoadALevel(pSceneName));
         }
 

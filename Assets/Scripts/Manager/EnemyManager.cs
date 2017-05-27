@@ -16,6 +16,11 @@ namespace Rpg
 
         public float spawnerCooldown = 45f;
         public int maxEnemyForStartSpawning = 5;
+        private Transform _player;
+        public Transform player
+        {
+            get { return Player.instance.transform; }
+        }
 
     public List<Transform> ennemyNear = new List<Transform>();
         private Dictionary<String, List<GameObject>> enemies = new Dictionary<String, List<GameObject>>();

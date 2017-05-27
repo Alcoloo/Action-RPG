@@ -15,25 +15,7 @@ public class EnemyTank : Enemy {
     void Start () {
         tree = GetComponent<BehaviorTree>();
         Init();
-        SetModePatrol();
 	}
-
-    protected void SetModePatrol()
-    {
-        //nav.Stop();
-        tree.EnableBehavior();
-        nav.speed = template.speed;
-        DoAction = DoActionPatrol;
-    }
-
-    protected void DoActionPatrol()
-    {
-        if (isDetected())
-        {
-            tree.DisableBehavior();
-            SetModeChargePlayer();
-        }
-    }
     // Update is called once per frame
     void Update () {
 		

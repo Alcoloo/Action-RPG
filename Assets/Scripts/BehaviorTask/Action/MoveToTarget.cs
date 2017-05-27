@@ -6,30 +6,34 @@ using HelpURL = BehaviorDesigner.Runtime.Tasks.HelpURLAttribute;
 using BehaviorDesigner.Runtime.Formations.Tasks;
 using BehaviorDesigner.Runtime;
 
-public class MoveToTarget : NavMeshFormationGroup
-{
+namespace Rpg {
 
-    [Tooltip("The distance to stop moving")]
-    public SharedFloat distance = 5;
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MoveToTarget : NavMeshFormationGroup {
 
-    private List<Vector3> offsets = new List<Vector3>();
+        [Tooltip("The distance to stop moving")]
+        public SharedFloat distance = 5;
 
-    protected override Vector3 TargetPosition(int index, float zLookAhead)
-    {
-        if (offsets.Count <= index) {
-            return Vector3.zero;
+        private List<Vector3> offsets = new List<Vector3>();
+
+        protected override Vector3 TargetPosition(int index, float zLookAhead) {
+            if (offsets.Count <= index) {
+                return Vector3.zero;
+            }
+
+            var leaderTransform = leader.Value == null ? transform : leader.Value.transform;
+            float agentOffset = 0;
+
+            return leaderTransform.TransformPoint(offsets[index].x * (index % 2 == 0 ? -1 : 1) + agentOffset, 0, offsets[index].z + zLookAhead);
         }
 
-        var leaderTransform = leader.Value == null ? transform : leader.Value.transform;
-        float agentOffset = 0;
+        public override TaskStatus OnUpdate() {
+            base.OnUpdate();
 
-        return leaderTransform.TransformPoint(offsets[index].x * (index % 2 == 0 ? -1 : 1) + agentOffset, 0, offsets[index].z + zLookAhead);
-    }
-
-    public override TaskStatus OnUpdate() {
-        base.OnUpdate();
-
-        if (Vector3.Distance(transform.position, targetTransform.Value.position) <= distance.Value) return TaskStatus.Success;
-        else return TaskStatus.Running;
+            if (Vector3.Distance(transform.position, targetTransform.Value.position) <= distance.Value) return TaskStatus.Success;
+            else return TaskStatus.Running;
+        }
     }
 }

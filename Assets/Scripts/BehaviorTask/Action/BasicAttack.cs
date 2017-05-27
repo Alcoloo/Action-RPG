@@ -8,25 +8,25 @@ using Rpg;
 
 public class BasicAttack : Action
 {
-    private Enemy enemyScript;
-    private bool isOnRange = false;
-    private bool isAttacked = false;
-    private bool isOnAttack = false;
-    private float animationTime = 1f;
-    private float currentAnimationTime = 0f;
-    private float cooldown = 2f;
+    private Enemy _enemyScript;
+    private bool _isOnRange = false;
+    private bool _isAttacked = false;
+    private bool _isOnAttack = false;
+    private float _animationTime = 1f;
+    private float _currentAnimationTime = 0f;
+    private float _cooldown = 2f;
 
     public override void OnStart()
     {
-        isOnRange = false;
-        isAttacked = false;
-        isOnAttack = false;
-        enemyScript = GetComponent<Enemy>();
-        if (enemyScript.isOnAttackRange()) isOnRange = true;
+        _isOnRange = false;
+        _isAttacked = false;
+        _isOnAttack = false;
+        _enemyScript = GetComponent<Enemy>();
+        if (_enemyScript.isOnAttackRange()) _isOnRange = true;
         else
         {
             GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, false);
-            isOnRange = false;
+            _isOnRange = false;
         }
         base.OnStart();
     }
@@ -35,19 +35,20 @@ public class BasicAttack : Action
 
     public override TaskStatus OnUpdate()
     {
-        if (!isOnRange) return TaskStatus.Failure;
+        if (!_isOnRange) return TaskStatus.Failure;
         
         else
         {
-            if (isAttacked)
+            if (_isAttacked)
             {
-                isAttacked = false;
+                _isAttacked = false;
                 return TaskStatus.Success;
             }
-            if (!isOnAttack)
+            if (!_isOnAttack)
             {
-                isOnAttack = true;
-                GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, true);
+                _isOnAttack = true;
+                _enemyScript.ChangeAnimationState("attack");
+
                 StartCoroutine(attackCoroutine());
             }
             return TaskStatus.Running;
@@ -57,15 +58,15 @@ public class BasicAttack : Action
 
     public IEnumerator attackCoroutine()
     {
-        while(currentAnimationTime < animationTime)
+        while(_currentAnimationTime < _animationTime)
         {
-            currentAnimationTime += 0.1f;
+            _currentAnimationTime += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
-        currentAnimationTime = 0;
-        isOnAttack = false;
-        isAttacked = true;
-        GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, false);
+        _currentAnimationTime = 0;
+        _isOnAttack = false;
+        _isAttacked = true;
+
     }
 }
 

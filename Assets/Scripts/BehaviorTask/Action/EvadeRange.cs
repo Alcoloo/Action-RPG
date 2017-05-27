@@ -2,6 +2,7 @@ using UnityEngine;
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using BehaviorDesigner.Runtime.Tasks.Movement;
+using Rpg;
 
 public class EvadeRange : NavMeshMovement
 {
@@ -15,6 +16,7 @@ public class EvadeRange : NavMeshMovement
 
     public SharedGameObject target;
 
+    private Enemy enemyScript;
     // The position of the target at the last frame
     private Vector3 targetPosition;
 
@@ -24,6 +26,8 @@ public class EvadeRange : NavMeshMovement
         target = GameObject.FindGameObjectWithTag("Player");
         targetPosition = target.Value.transform.position;
         SetDestination(Target());
+        enemyScript = GetComponent<Enemy>();
+        enemyScript.ChangeAnimationState("run");
     }
 
     // Evade from the target. Return success once the agent has fleed the target by moving far enough away from it

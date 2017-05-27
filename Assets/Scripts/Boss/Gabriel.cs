@@ -35,7 +35,7 @@ namespace Assets.Scripts.Boss
             }
         }
 
-        protected void Awake()
+        override protected void Awake()
         {
             if (_instance != null)
             {

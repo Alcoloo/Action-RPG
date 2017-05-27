@@ -24,6 +24,7 @@ namespace Rpg
         #endregion
 
         #region Caracteristics
+        private int _damage = 10;
         private int _health = 10;
         private int _maxHealth = 10;
         private int _armor = 2;
@@ -33,6 +34,18 @@ namespace Rpg
         #region Editor Links
         [SerializeField]
         private Camera _camera;
+        [SerializeField]
+        private GameObject _leftSword;
+        [SerializeField]
+        private GameObject _rightSword;
+        [SerializeField]
+        private GameObject _bow;
+        #endregion
+
+        #region ScriptWeapon
+        private Weapon _weaponL;
+        private Weapon _weaponR;
+        private Weapon _weaponBow;
         #endregion
 
         #region Events
@@ -55,11 +68,16 @@ namespace Rpg
             OnAttack = new OnAttackEvent();
             OnDeath = new UnityEvent();
             DoAction = DoActionNormal;
+            _weaponBow = _bow.GetComponent<BowKind>();
+            _weaponR = _rightSword.GetComponent<SwordKind>();
+            _weaponL = _leftSword.GetComponent<SwordKind>();
         }
 
         protected void Start()
         {
-
+            _weaponR.OnHit.AddListener(HitSomething);
+            _weaponBow.OnHit.AddListener(HitSomething);
+            _weaponL.OnHit.AddListener(HitSomething);
         }
 
         protected void Update()
@@ -70,7 +88,7 @@ namespace Rpg
             forward = forward.normalized;
             //Right vector relative to the camera always orthogonal to the forward vector
             Vector3 right = new Vector3(forward.z, 0, -forward.x);
-            RPGCharacterController.instance.inputVec = ControllerInput.manager.horizontal * right + ControllerInput.manager.vertical * forward;
+            if(m_state!=STATE.CINEMATIC)RPGCharacterController.instance.inputVec = ControllerInput.manager.horizontal * right + ControllerInput.manager.vertical * forward;
             DoAction();
         }
 
@@ -79,7 +97,7 @@ namespace Rpg
         // <summary>
         /// Set le player dans l'état Idle prêt à être utilisé pour les cinématiques    
         /// </summary>
-        private void SetModeCinematic()
+        public void SetModeCinematic()
         {
             m_state = STATE.CINEMATIC;
             DoAction = DoActionCinematic;
@@ -288,6 +306,12 @@ namespace Rpg
                 SetModeDeath();
             }
             else SetModeHit(pDamage);
+        }
+
+        private void HitSomething(GameObject target)
+        {
+            Debug.Log("Player Hit " + target.name);
+            if(target.GetComponent<Enemy>()) target.GetComponent<Enemy>().TakeDamage(_damage);
         }
     }
 }

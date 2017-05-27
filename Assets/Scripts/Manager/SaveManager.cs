@@ -14,8 +14,6 @@ namespace Rpg.Manager
 
 
         private PlayerCarac _player;
-        private Dictionary<string,WeaponCarac> _swordList = new Dictionary<string,WeaponCarac> ();
-        private Dictionary<string,GunCarac> _gunList = new Dictionary<string, GunCarac>();
 
         public PlayerCarac player
         {
@@ -31,7 +29,7 @@ namespace Rpg.Manager
         {
 
         }
-       
+
         #region Save functions
 
 
@@ -39,32 +37,9 @@ namespace Rpg.Manager
         {
             _player = pPlayer;
         }
-        public void SaveSword(string pWeaponName,WeaponCarac pSword)
-        {
-            _swordList.Add(pWeaponName, pSword);
-        }
-        public void SaveGun(string pWeaponName, GunCarac pGun)
-        {
-            _gunList.Add(pWeaponName, pGun);
-        }
 
         #endregion
-
-
-        #region Restore function
-
-        public WeaponCarac GetSwordCarac(string pWeaponName)
-        {
-            if (!_swordList.ContainsKey(pWeaponName)) return null;
-            return _swordList[pWeaponName];
-        }
-        public GunCarac GetGunCarac(string pWeaponName)
-        {
-            if (!_gunList.ContainsKey(pWeaponName)) return null;
-            return _gunList[pWeaponName];
-        }
-        #endregion
-
+        
 
     }
 }

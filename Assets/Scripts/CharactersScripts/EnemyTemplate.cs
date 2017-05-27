@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Rpg;
 
 namespace Assets.Scripts.CharactersScripts
 {
@@ -14,6 +15,8 @@ namespace Assets.Scripts.CharactersScripts
         protected int m_health;
         [SerializeField]
         protected int m_armor;
+        [SerializeField]
+        protected int m_damage;
         [Header("Range")]
         [SerializeField]
         protected float m_detectionRange;
@@ -41,6 +44,11 @@ namespace Assets.Scripts.CharactersScripts
         public int armor
         {
             get { return m_armor; }
+        }
+
+        public int damage
+        {
+            get { return m_damage; }
         }
 
         public float detectionRange
@@ -96,7 +104,6 @@ namespace Assets.Scripts.CharactersScripts
             m_speed = copy.speed;
             m_hurtDuration = copy.hurtDuration;
             m_attackDuration = copy.m_attackDuration;
-
         }
         #endregion
     }

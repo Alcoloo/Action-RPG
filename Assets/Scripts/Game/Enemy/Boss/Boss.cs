@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Rpg;
+using UnityEngine;
+
 
 public class Boss : Enemy {
 
-    void Start() {
+    override public void Start() {
         DoAction = DoActionVoid;
         Init();
     }

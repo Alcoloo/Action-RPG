@@ -12,17 +12,17 @@ namespace Assets.Scripts.Boss
         delegate void DoAction();
 
 
-        public void Start()
+        override public void Start()
         {
 
         }
 
-        public void Update()
+         protected void Update()
         {
             
         }
 
-        public void DoActionVoid()
+         public void DoActionVoid()
         {
 
         }

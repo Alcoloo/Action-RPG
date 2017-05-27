@@ -24,13 +24,19 @@ namespace Assets.Scripts.CharactersScripts
             }
         }
 
-        protected void Awake()
+        public EnemiesStat()
         {
             if (_instance != null)
             {
                 throw new Exception("Tentative de création d'une autre instance de EnemiesStat alors que c'est un singleton.");
             }
             _instance = this;
+            //DontDestroyOnLoad(gameObject);
+        }
+
+        protected void Awake()
+        {
+            
         }
 
         public EnemyTemplate getEnemy(string pName)

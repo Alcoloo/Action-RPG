@@ -55,7 +55,6 @@ GameObject:
   - component: {fileID: 54219331457615574}
   - component: {fileID: 195605018484467246}
   - component: {fileID: 114760617946521332}
-  - component: {fileID: 114028633340227894}
   - component: {fileID: 114885172145360920}
   m_Layer: 0
   m_Name: EnemySummoner
@@ -486,38 +485,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b50279a14f370140becbc2a2a4bda8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weaponAsset: bow
-  _align: 0
-  hand: 2
-  _weaponController: {fileID: 114028633340227894}
-  _unavailableTag: Ennemy
-  _attack: 10
-  bulletTemplate: {fileID: 1672555982810128, guid: 803ffa671169f6e47974e44e0071d04a,
-    type: 2}
+  currentEnnemyAimedIndex: 0
+  m_unavailableTag: 
+  m_weaponAsset: 
+  m_align: 0
+  _bulletTemplate: {fileID: 0}
   transformToInstantiate: {fileID: 0}
   radiusDetect: 0
   viewAngle: 0
---- !u!114 &114028633340227894
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1286822487412302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b25abcfb57d29a34f93f6640b4510a07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curentShooter: {fileID: 0}
-  swords: []
-  shoots: []
-  leftHand: {fileID: 0}
-  rightHand: {fileID: 0}
-  weaponHit:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: Rpg.BaseGameEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-      PublicKeyToken=null
 --- !u!114 &114531364716224222
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -546,6 +521,18 @@ MonoBehaviour:
   rotationSpeed: 0
   attackMovementSpeed: 0
   speed: 0
+  m_template:
+    EnemyName: 
+    m_health: 0
+    m_armor: 0
+    m_detectionRange: 0
+    m_attackDistance: 0
+    m_rotationSpeed: 0
+    m_attackMovementSpeed: 0
+    m_speed: 0
+    m_hurtDuration: 0
+    m_attackDuration: 0
+  m_prefab: {fileID: 1286822487412302}
 --- !u!114 &114885172145360920
 MonoBehaviour:
   m_ObjectHideFlags: 1

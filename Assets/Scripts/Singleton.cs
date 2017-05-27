@@ -18,6 +18,7 @@ namespace Rpg
 
         //
         protected Transform m_Transform;
+        
 
         protected virtual void Awake()
         {
@@ -31,12 +32,12 @@ namespace Rpg
                 default:
                 case SingletonMode.replaceExisting:
                     if (manager != null)
-                        Destroy(manager.gameObject);
+                        //Destroy(manager.gameObject);
                     manager = this as T;
                     break;
             }
 
-            if (m_dontDestroyGameObjectOnLoad) DontDestroyOnLoad(gameObject);
+            if (m_dontDestroyGameObjectOnLoad) DontDestroyOnLoad(transform.root.gameObject);
 
             m_Transform = transform;
         }

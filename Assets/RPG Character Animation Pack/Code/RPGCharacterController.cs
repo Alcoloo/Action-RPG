@@ -187,8 +187,8 @@ public class RPGCharacterController : MonoBehaviour
         //directional inputs
         if (ControllerInput.manager.dash)
         {
-            dh = ControllerInput.manager.horizontal;
-            dv = ControllerInput.manager.vertical;
+            //dh = ControllerInput.manager.horizontal;
+            //dv = ControllerInput.manager.vertical;
         }
 		if(!isRolling && !isAiming)
 		{
@@ -480,14 +480,15 @@ public class RPGCharacterController : MonoBehaviour
             if (attackSide != 3)
             {
                 StartCoroutine(_LockMovementAndAttack(0, 0.5f));
-                //if (attackSide == 1) StartCoroutine(ActivateAttack(0.1f, HANDKIND.left));
-                //else if (attackSide == 2) StartCoroutine(ActivateAttack(0.1f, HANDKIND.right));
+                if (attackSide == 1) StartCoroutine(ActivateAttack(0.5f, HAND.left));
+                else if (attackSide == 2) StartCoroutine(ActivateAttack(0.5f, HAND.right));
             }
         }
         else
         {
             StartCoroutine(_LockMovementAndAttack(0, 0.75f));
             StartCoroutine(ShootCorou(0.5f));
+            StartCoroutine(ActivateAttack(0.5f, HAND.two_hand));
         }
     }
 
@@ -533,7 +534,8 @@ public class RPGCharacterController : MonoBehaviour
 				    animator.SetTrigger("Attack" + (attackNumber).ToString() + "Trigger");
 					StartCoroutine(_LockMovementAndAttack(0, 0.75f));
                     StartCoroutine(ShootCorou(0.5f));
-			    }
+                    StartCoroutine(ActivateAttack(0.5f, HAND.two_hand));
+                }
 			}
 		}
 	}
@@ -546,13 +548,13 @@ public class RPGCharacterController : MonoBehaviour
 
     public IEnumerator ActivateAttack(float time, HAND hand)
     {
-        if (hand == HAND.two_hand) twoHandBow.GetComponent<BowKind>().ActivateAttack(true);
-        if (hand == HAND.left) swordL.GetComponent<SwordKind>().ActivateAttack(true);
-        if (hand == HAND.right) swordR.GetComponent<SwordKind>().ActivateAttack(true);
+        GameObject lCurrentWeapon;
+        if (hand == HAND.right) lCurrentWeapon = swordR;
+        else if (hand == HAND.left) lCurrentWeapon = swordL;
+        else lCurrentWeapon = twoHandBow;
+        lCurrentWeapon.GetComponent<Weapon>().ActivateAttack(true);
         yield return new WaitForSeconds(time / animationSpeed);
-        if (hand == HAND.two_hand) twoHandBow.GetComponent<BowKind>().ActivateAttack(false);
-        if (hand == HAND.left) swordL.GetComponent<SwordKind>().ActivateAttack(false);
-        if (hand == HAND.right) swordR.GetComponent<SwordKind>().ActivateAttack(false);
+        lCurrentWeapon.GetComponent<Weapon>().ActivateAttack(false);
     }
 
 	public void AttackKick(int kickSide)
@@ -782,6 +784,7 @@ public class RPGCharacterController : MonoBehaviour
 
     public IEnumerator _GabrielCinematic()
     {
+        Player.instance.SetModeCinematic();
         while (true)
         {
             animator.SetBool("Moving", true);

@@ -6,12 +6,10 @@ namespace Rpg
 {
     public enum ALIGN { angelic, demonic , both, none };
     public enum HAND { right, left, two_hand };
-    public class WeaponCreationEvent : UnityEvent<Weapon>
-    {
+    public class EventCollision : UnityEvent<GameObject> { }
 
-    }
     /// <summary>
-    /// 
+    ///  Classe Weapon
     /// </summary>
     public abstract class Weapon : MonoBehaviour
     {
@@ -19,6 +17,8 @@ namespace Rpg
         
         [SerializeField]
         protected string m_unavailableTag;
+
+        public EventCollision OnHit;
 
         protected int m_damage = 10;
         protected bool _isAttack = false;
@@ -37,6 +37,16 @@ namespace Rpg
             get { return m_align; }
         }
 
+        public Weapon()
+        {
+            OnHit = new EventCollision();
+        }
+
+        protected virtual void Awake()
+        {
+            
+        }
+
         protected void Start()
         {
 
@@ -48,6 +58,11 @@ namespace Rpg
         public void ActivateAttack(bool state)
         {
             _isAttack = state;
+        }
+
+        protected virtual void OnCollisionEnter(Collision col)
+        {
+            if(_isAttack && (col.gameObject.GetComponent<Enemy>() || col.gameObject.GetComponent<Player>())) OnHit.Invoke(col.gameObject);
         }
     }
 }

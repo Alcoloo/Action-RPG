@@ -357,7 +357,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 5072657373205350414345
+  m_Text: Press Space
 --- !u!114 &114393956717395530
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -377,6 +377,11 @@ MonoBehaviour:
   speedText: 5
   currentLine: 0
   endAtLine: 0
+  endDialogue:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!114 &114517642155024752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -552,9 +557,9 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1361192564288264}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.9659258, y: -0, z: -0, w: 0.2588191}
+  m_LocalPosition: {x: 0, y: 0, z: -22.867748}
+  m_LocalScale: {x: 0.33333334, y: 0.27083334, z: 0.3125}
   m_Children:
   - {fileID: 224950041668289388}
   - {fileID: 4488994427496342}
@@ -563,7 +568,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 396, y: 223}
+  m_AnchoredPosition: {x: 131.78998, y: -48.061066}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224827449498620214

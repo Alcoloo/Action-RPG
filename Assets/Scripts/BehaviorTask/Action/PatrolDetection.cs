@@ -2,7 +2,7 @@
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using BehaviorDesigner.Runtime.Tasks.Movement;
-
+using Rpg;
 
 namespace BehaviorDesigner.Runtime.Movement
 {
@@ -36,6 +36,7 @@ namespace BehaviorDesigner.Runtime.Movement
             }
             waypointReachedTime = -1;
             SetDestination(Target());
+            enemyScript.ChangeAnimationState("walk");
         }
 
         // Patrol around the different waypoints specified in the waypoint array. Always return a task status of running. 

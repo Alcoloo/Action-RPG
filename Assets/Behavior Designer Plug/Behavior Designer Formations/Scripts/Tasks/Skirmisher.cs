@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BehaviorDesigner.Runtime.Tasks;
 using Tooltip = BehaviorDesigner.Runtime.Tasks.TooltipAttribute;
 using HelpURL = BehaviorDesigner.Runtime.Tasks.HelpURLAttribute;
+using Rpg;
 
 namespace BehaviorDesigner.Runtime.Formations.Tasks
 {
@@ -42,6 +43,7 @@ namespace BehaviorDesigner.Runtime.Formations.Tasks
         public override TaskStatus OnUpdate()
         {
             if (enemyScript.isOnAttackRange()) return TaskStatus.Success;
+            enemyScript.ChangeAnimationState("run");
             return base.OnUpdate();
         }
 

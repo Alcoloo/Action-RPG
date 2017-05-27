@@ -15,10 +15,20 @@
         [HideInInspector]
         public bool isReady { get; protected set; }
 
+        public UnityEvent onReady;
+
+        public BaseManager()
+        {
+            onReady = new UnityEvent();
+            manager = this as T;
+            isReady = false;
+        }
+
         protected override void Awake()
         {
             base.Awake();
-            isReady = false;
+            isReady = true;
+            onReady.Invoke();
         }
 
         protected virtual void OnDestroy()

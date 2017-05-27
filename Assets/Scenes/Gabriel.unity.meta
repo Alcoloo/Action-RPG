@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: a20b623e9f51022429ac99d5c89ba413
+<<<<<<< HEAD
+guid: 563e1ff7794e61f439a20b85279eb388
+=======
+guid: f3f9672fe3942994492f7953e4353eaa
+>>>>>>> dev
 timeCreated: 1494395946
 licenseType: Free
 DefaultImporter:

@@ -1,6 +1,7 @@
 ﻿using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Formations.Tasks;
 using BehaviorDesigner.Runtime.Tactical.Tasks;
+using Rpg;
 using Rpg.Controller;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,9 +20,8 @@ public class EnemyPopCorn : Enemy {
     // Use this for initialization
     public override void Start() {
         
-        nav.speed = speed;
-        //GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = player.transform;
-        //SetModeChargePlayer();
+
+        m_nav.speed = m_template.speed;
         GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, true);
 	}
 

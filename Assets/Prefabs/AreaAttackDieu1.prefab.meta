@@ -1,9 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: fbb47b653a5cc384aa3446a042c95d68
+=======
 <<<<<<< Updated upstream
 guid: 72f937aa6526ca84c9b801482dee5890
 =======
 guid: 429970fd3cfa17e4ab3b8a9f9032f2b0
 >>>>>>> Stashed changes
+>>>>>>> dev
 timeCreated: 1494516169
 licenseType: Free
 NativeFormatImporter:

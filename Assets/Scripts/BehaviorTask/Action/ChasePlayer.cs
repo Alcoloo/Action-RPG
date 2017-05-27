@@ -11,29 +11,29 @@ namespace Rpg
     /// </summary>
     public class ChasePlayer : Action
     {
-        private Enemy enemyScript;
-        private Transform target;
-        private NavMeshAgent nav;
+        private Enemy _enemyScript;
+        private Transform _target;
+        private NavMeshAgent _nav;
 
         public override void OnStart()
         {
             base.OnStart();
-            enemyScript = GetComponent<Enemy>();
-            target = enemyScript.player;
-            nav = GetComponent<NavMeshAgent>();
+            _enemyScript = GetComponent<Enemy>();
+            _target = _enemyScript.player;
+            _nav = GetComponent<NavMeshAgent>();
         }
 
         public override TaskStatus OnUpdate()
         {
-            if (enemyScript.isOnAttackRange())
+            if (_enemyScript.isOnAttackRange())
             {
-                nav.Stop();
+                _nav.Stop();
                 return TaskStatus.Success;
             }
-            enemyScript.playerAnimationTest();
-            transform.LookAt(target);
-            nav.destination = target.position;
-            nav.Resume();
+            _enemyScript.ChangeAnimationState("run");
+            transform.LookAt(_target);
+            _nav.destination = _target.position;
+            _nav.Resume();
 
             return TaskStatus.Running;
         }
