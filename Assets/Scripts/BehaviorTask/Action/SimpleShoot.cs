@@ -23,6 +23,7 @@ public class SimpleShoot : Action
         if(!isShooting)
         {
             enemyScript.lookPlayer();
+            //enemyScript.createShoot();
             enemyScript.CreateShoot();
             isShooting = true;
             startTime = CustomTimer.manager.elapsedTime;

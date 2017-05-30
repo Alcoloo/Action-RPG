@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.CharactersScripts;
+using BehaviorDesigner.Runtime;
 using Rpg;
 using Rpg.Characters;
 using Rpg.Controller;
@@ -8,14 +9,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
+using UnityEngine.AI;
+
 namespace Rpg
 {
     public class Enemy : MonoBehaviour
     {
+
         #region variable player
+
         public Transform player;
-        #endregion        /* A VOIR SI ON GARDE AVEC BALANCING MANAGER
+
+        #endregion
+
+        /* A VOIR SI ON GARDE AVEC BALANCING MANAGER
         #region variable enemy parametrable
         public float detectionRange;
         public float attackDistance;
@@ -24,13 +31,17 @@ namespace Rpg
         public float speed;
         protected float m_hurtDuration;
         protected float m_attackDuration;
-        #endregion         */
+        #endregion
+           
+         */
 
         #region variable class
-        protected int m_currentHealth;
+
+        public int m_currentHealth { get; protected set; }
         protected System.Action DoAction;
         protected NavMeshAgent m_nav;
         protected float m_playerDistance;
+
         [SerializeField]
         protected EnemyTemplate m_template;
         protected float m_startTime;
@@ -41,86 +52,123 @@ namespace Rpg
         protected string[] m_animNames = { "run", "walk", "attack", "canalize", "hurt", "charge", "die", "shoot" };
         [SerializeField]
         protected GameObject m_prefab;
-        #endregion
+        public float health { get; private set; }
+
+        #endregion
+
         #region Du constructeur à l'Init
+
         //TODO Weapon n'est pas set de base
+
         protected virtual void Awake()
         {
-            if (BalancingManager.manager.isReady) InitAfterBalancing();
+            if (BalancingManager.manager != null && BalancingManager.manager.isReady) InitAfterBalancing();
             else BalancingManager.manager.onReady.AddListener(InitAfterBalancing);
-        }
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+            DoAction = DoActionVoid;
+        }
+
         protected virtual void InitAfterBalancing()
         {
             BalancingManager.manager.onReady.RemoveListener(InitAfterBalancing);
             m_template = new EnemyTemplate(BalancingManager.manager.getEnemy(m_prefab.name));
             m_currentHealth = m_template.health;
-            player = GameObject.FindGameObjectWithTag("Player").transform;
-            m_healthBar = transform.FindChild("HealthComponent").gameObject;
-            m_healthBarScript = m_healthBar.GetComponent<HealthRotation>();
+       
+
+            if (transform.FindChild("HealthComponent"))
+            {
+                m_healthBar = transform.FindChild("HealthComponent").gameObject;
+                m_healthBarScript = m_healthBar.GetComponent<HealthRotation>();
+                m_healthBar.SetActive(false);
+            }
             m_nav = GetComponent<NavMeshAgent>();
             if (GetComponent<Weapon>()) m_weapon = GetComponent<Weapon>();
-            //pour eviter le "find" le manager envera le gameObject Player au enemy
-            m_healthBar.SetActive(false);
             m_anim = GetComponentInChildren<Animator>();
-            DoAction = DoActionVoid;
-        }
+            health = m_template.health;
+        }
+
         // Use this for initialization
         public virtual void Start()
-        {            player = EnemyManager.manager.player;
-        }
-        public void Init()
-        {
+        {
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+            if (!GetComponent<CapsuleCollider>().enabled) GetComponent<CapsuleCollider>().enabled = true;
         }
 
+        public void Init()
+        {
 
-        #endregion
-        public void TakeDamage(int damage)
+        }
+
+        public void FixedUpdate()
+        {
+            m_playerDistance = Vector3.Distance(transform.position, player.position);
+            DoAction();
+        }
+
+        #endregion
+
+        public virtual void TakeDamage(int damage)
         {
             Debug.Log("Enemy Took Damage");
-            if (m_currentHealth - damage > 0)
-                m_currentHealth -= damage;
-            else
-                m_currentHealth = 0;
-
-            UpdateHealthBar();
-            if (m_currentHealth > 0)
-                SetModeHurt();
-            else
-                SetModeDie();
+            if (m_currentHealth - damage > 0) m_currentHealth -= damage;
+            else m_currentHealth = 0;
+            if (m_currentHealth > 0) SetModeHurt();
+            else SetModeDie();
+            if (m_healthBar != null) UpdateHealthBar();
         }
-        #region State Machine
+
+        #region State Machine
+
         private void HitSomething(GameObject player)
         {
             Debug.Log("Enemy hit Player");
             Player.instance.TakeDamage(m_template.damage);
-        }
-        public void UpdateHealthBar()
+        }
+
+        public virtual void UpdateHealthBar()
         {
+            if (!m_healthBar.activeInHierarchy) m_healthBar.SetActive(true);
             m_healthBarScript.changeLife((float)m_currentHealth / (float)m_template.health);
         }
-        protected void SetModeVoid() { DoAction = DoActionVoid; }
-        protected void DoActionVoid() { }
+
+        protected virtual void SetModeVoid() { DoAction = DoActionVoid; }
+
+        protected virtual void DoActionVoid() { }
+
         protected virtual void SetModeHurt()
         {
             ChangeAnimationState("hurt");
-        }
-        protected void SetModeDie() { gameObject.SetActive(false); }
-        protected void DoActionDie()
+        }
+
+        protected virtual void SetModeDie()
         {
-            //Destroy();
-            //si l'animation de mort et fini destroy()
-        }
+            GetComponent<BehaviorTree>().DisableBehavior();
+            GetComponent<CapsuleCollider>().enabled = false;
+            m_startTime = CustomTimer.manager.elapsedTime;
+            DoAction = DoActionDie;
+        }
+
+        protected virtual void DoActionDie()
+        {
+            if (CustomTimer.manager.isTime(m_startTime, m_anim.GetCurrentAnimatorStateInfo(0).length / 3)) Destroy(m_healthBar);
+            if (CustomTimer.manager.isTime(m_startTime, m_anim.GetCurrentAnimatorStateInfo(0).length)) gameObject.SetActive(false);
+        }
+
         public void lookPlayer()
         {
             transform.LookAt(player);
-        }
+        }
+
         protected virtual void Destroy()
         {
             SetModeVoid();
             gameObject.SetActive(false);
         }
-        #endregion
+
+        #endregion
+
         #region animation
+
         private void ResetAllAnimStates()
         {
             if (m_anim != null)
@@ -129,26 +177,38 @@ namespace Rpg
                 {
                     if (m_anim.GetBool(m_animNames[i])) m_anim.SetBool(m_animNames[i], false);
                 }
+
             }
-        }
+        }
+
         public void ChangeAnimationState(string pState)
         {
             ResetAllAnimStates();
             if (m_anim != null) if (!m_anim.GetBool(pState)) m_anim.SetBool(pState, true);
         }
-        #endregion
+
+        #endregion
+
         #region test
-        public bool isDetected() { return (m_playerDistance < m_template.detectionRange); }
-        public bool isOnAttackRange() { return (m_playerDistance < m_template.attackDistance); }
-        #endregion
+
+        public bool isDetected() { return (m_playerDistance < m_template.detectionRange); }
+
+        public bool isOnAttackRange() { return (m_playerDistance < m_template.attackDistance); }
+
+        #endregion
+
         #region attackCoolDown
+
         public void SetStartTime()
-        {            m_startTime = CustomTimer.manager.elapsedTime;
-        }
+        {
+            m_startTime = CustomTimer.manager.elapsedTime;
+        }
+
         public float GetStartTime()
         {
             if (m_startTime != 0f) return m_startTime;
             else return 0f;
-        }        #endregion
-    }
-}
+        }
+        #endregion
+    }
+}

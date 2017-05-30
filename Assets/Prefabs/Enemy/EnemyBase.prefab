@@ -749,8 +749,8 @@ GameObject:
   - component: {fileID: 54035599657007802}
   - component: {fileID: 195653977098423716}
   - component: {fileID: 114527338859177946}
-  - component: {fileID: 114364631874488328}
   - component: {fileID: 114251432495340308}
+  - component: {fileID: 114364631874488328}
   m_Layer: 0
   m_Name: EnemyBase
   m_TagString: Ennemy
@@ -2167,12 +2167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2b275c9113b3bd4f92a2a8b73b14f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  detectionRange: 0
-  attackDistance: 0
-  rotationSpeed: 0
-  attackMovementSpeed: 0
-  speed: 0
+  player: {fileID: 4720802285383202}
   m_template:
     EnemyName: 
     m_health: 0
@@ -2194,7 +2189,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1680371256587390}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ff6bb66dd57747408edb8ccfeebb5f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 469aeb7fe22b30c4d88dc84eb10dec60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   currentEnnemyAimedIndex: 0
@@ -2252,10 +2247,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.1759491
+  m_Radius: 0.3
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0, z: 0.4}
 --- !u!137 &137205650543554950
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

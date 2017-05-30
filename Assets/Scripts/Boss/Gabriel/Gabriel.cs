@@ -10,7 +10,7 @@ namespace Assets.Scripts.Boss.Gabriel
     /// <summary>
     /// 
     /// </summary>
-    public class Gabriel : MonoBehaviour
+    public class Gabriel : Boss
     {
         private Caracteristic cara;
         private bool hasBeenhit;
@@ -28,8 +28,9 @@ namespace Assets.Scripts.Boss.Gabriel
             }
         }
 
-        protected void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             if (_instance != null)
             {
                 throw new Exception("Tentative de création d'une autre instance de Gabriel alors que c'est un singleton.");
@@ -37,28 +38,43 @@ namespace Assets.Scripts.Boss.Gabriel
             _instance = this;
 
             hasBeenhit = false;
-            cara = GetComponent<Caracteristic>();
             
         }
 
-        protected void Start()
+        public override void Start()
         {
-            if (cara.isDeath != null) cara.isDeath.AddListener(DestroyBoss);
-
-            HudManager.manager.bossSlider.maxValue = cara.pv;
-            HudManager.manager.bossSlider.value = cara.pv;
+            base.Start();
+            HudManager.manager.bossSlider.maxValue = health;
+            HudManager.manager.bossSlider.value = health;
         }
-        
 
-        private void DestroyBoss()
-        {
-            CinematicManager.instance.LaunchCinematic();
-            //ScenesManager.instance.changeScene();
-        }  
-        
+
         protected void OnCollisionEnter(Collision col)
         {
-            if (col.gameObject.name == "Sword") hasBeenhit = true;
+            if (col.gameObject.name == "Player")
+            {
+                hasBeenhit = true;
+            }
+        }
+
+        public override void TakeDamage(int damage)
+        {
+            base.TakeDamage(damage);
+        }
+
+        public override void UpdateHealthBar()
+        {
+            HudManager.manager.ChangeBossLifeValue(health);
+        }
+
+        protected override void SetModeDie()
+        {
+            DoActionDie();
+        }
+
+        protected override void DoActionDie()
+        {
+            CinematicManager.instance.LaunchCinematic();
         }
 
         protected void OnCollisionExit(Collision col)

@@ -6,7 +6,7 @@ namespace Rpg
     public class Singleton<T> : MonoBehaviour
         where T : Component
     {
-        public enum SingletonMode { replaceExisting, destroySelfIfAlreadyExists };
+        public enum SingletonMode { destroySelfIfAlreadyExists, replaceExisting };
 
         public static T manager;
 
@@ -18,28 +18,38 @@ namespace Rpg
 
         //
         protected Transform m_Transform;
-        
+
+        protected bool IsDestroyed;
 
         protected virtual void Awake()
         {
+            if ( m_dontDestroyGameObjectOnLoad && manager == null) DontDestroyOnLoad(transform.root.gameObject);
+            m_Transform = transform;
+
             switch (m_SingletonMode)
             {
                 case SingletonMode.destroySelfIfAlreadyExists:
                     if (manager != null)
-                        Destroy(gameObject);
+                    {
+                        if(gameObject != manager.gameObject)
+                        {
+                            DestroyImmediate(gameObject);
+                            IsDestroyed = true;
+                            break;
+                        }
+                    }
                     else manager = this as T;
                     break;
                 default:
                 case SingletonMode.replaceExisting:
                     if (manager != null)
-                        //Destroy(manager.gameObject);
+                    {
+                        DestroyImmediate(manager.gameObject);
+                        IsDestroyed = true;
+                    }
                     manager = this as T;
                     break;
             }
-
-            if (m_dontDestroyGameObjectOnLoad) DontDestroyOnLoad(transform.root.gameObject);
-
-            m_Transform = transform;
         }
     }
 }

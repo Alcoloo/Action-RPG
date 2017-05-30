@@ -16,7 +16,7 @@ namespace Rpg
         [SerializeField]
         public List<PoolObject> poolObjectList;
 
-        public IDictionary<string, List<GameObject>> pool = new Dictionary<string, List<GameObject>>();
+        public static IDictionary<string, List<GameObject>> pool = new Dictionary<string, List<GameObject>>();
 
 
         #region initialisation
@@ -36,23 +36,26 @@ namespace Rpg
         protected override void Awake()
         {
             base.Awake();
-            initPool();
-
-        }
-        
+            Debug.Log("awake pool " + pool.Count);
+            if (!IsDestroyed && pool.Count <= 0)
+            {
+                Debug.Log(" INIT POOL");
+                initPool();
+            }
+        }      
 
         /// <summary>
         /// initalise la pool, paramètrer les cas particuliers en fonction du nombre d'objets
         /// </summary>
         protected void initPool()
         {
-
             for (int i = 0; i < poolObjectList.Count; i++)
             {
                 if(poolObjectList[i].poolObject != null && poolObjectList[i].poolSize > 0)
                     createObjectPool(poolObjectList[i].poolObject, poolObjectList[i].poolSize);
             }
         }
+
         #endregion
 
         #region pool creation et modification
@@ -97,44 +100,51 @@ namespace Rpg
         public GameObject getFromPool(string pName)
         {
             bool canGetFromPool = false;
-            foreach (KeyValuePair<string, List<GameObject>> entry in pool)
+            if (pool != null)
             {
-                if (entry.Key == pName)
+                foreach (KeyValuePair<string, List<GameObject>> entry in pool)
                 {
-                    for (int i = 0; i < entry.Value.Count; i++)
+                    if (entry.Key == pName)
                     {
-                        if (!entry.Value[i].activeInHierarchy)
+                        for (int i = 0; i < entry.Value.Count; i++)
                         {
-                            canGetFromPool = true;
-                            return entry.Value[i];
-                        }
-                    }
-                    if (!canGetFromPool)
-                    {
-                        for (int j = 0; j < poolObjectList.Count; j++)
-                        {
-                            if (poolObjectList[j].poolObject.name == pName)
+                            if (!entry.Value[i].activeInHierarchy)
                             {
-                                GameObject lObject = instanciatePoolObject(poolObjectList[j].poolObject, entry.Value);
-                                return lObject;
+                                canGetFromPool = true;
+                                return entry.Value[i];
+                            }
+                        }
+                        if (!canGetFromPool)
+                        {
+                            for (int j = 0; j < poolObjectList.Count; j++)
+                            {
+                                if (poolObjectList[j].poolObject.name == pName)
+                                {
+                                    GameObject lObject = instanciatePoolObject(poolObjectList[j].poolObject, entry.Value);
+                                    return lObject;
+                                }
                             }
                         }
                     }
                 }
-            }
+            } 
             return null;
         }
 
         public void resetPool()
         {
+            Debug.Log("resetPool");
             foreach (KeyValuePair<string, List<GameObject>> entry in pool)
             {
-                for(int i = 0; i < entry.Value.Count; i++)
+                if (entry.Value != null)
                 {
-                    if (entry.Value[i].activeInHierarchy) entry.Value[i].SetActive(false);
+                    for (int i = 0; i < entry.Value.Count; i++)
+                    {
+                        if (entry.Value[i] != null && entry.Value[i].activeInHierarchy) entry.Value[i].SetActive(false);
+                    }
                 }
             }
-        }
+        }    
         #endregion
     }
 }

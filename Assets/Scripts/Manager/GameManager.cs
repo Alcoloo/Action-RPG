@@ -81,5 +81,30 @@
             Play();
         }
 
+        public void LoadSceneZone1()
+        {
+            ScenesManager.manager.LoadNextScene("Zone1");
+        }
+
+        public void LoadSceneZone2()
+        {
+            ScenesManager.manager.LoadNextScene("Zone2");
+        }
+
+        public void LoadSceneZone3()
+        {
+            ScenesManager.manager.LoadNextScene("Zone3");
+        }
+
+        public void LoadSceneGabriel()
+        {
+            ScenesManager.manager.LoadNextScene("Gabriel");
+        }
+
+        public void LoadSceneDieu()
+        {
+            ScenesManager.manager.LoadNextScene("ZoneBossDieu_final");
+        }
+
     }
 }

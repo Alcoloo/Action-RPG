@@ -16,12 +16,12 @@ public class SpawnerEnemyPopCorn : MonoBehaviour {
 	
     void Awake()
     {
-        if(!spawnerList.Contains(this)) spawnerList.Add(this);
+        if (!spawnerList.Contains(this)) spawnerList.Add(this);
     }
 
 	void Start () {
-        //startWave();
-	}
+        
+    }
 
     public void startWave()
     {
@@ -56,5 +56,10 @@ public class SpawnerEnemyPopCorn : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    void OnDestroy()
+    {
+        spawnerList = new List<SpawnerEnemyPopCorn>(); 
+    }
 
 }

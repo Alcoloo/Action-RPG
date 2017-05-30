@@ -22,7 +22,6 @@ public class EnemyPopCorn : Enemy {
         
 
         m_nav.speed = m_template.speed;
-        GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, true);
 	}
 
 

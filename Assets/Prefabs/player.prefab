@@ -605,6 +605,7 @@ GameObject:
   - component: {fileID: 136300866854441924}
   - component: {fileID: 114660737769507858}
   - component: {fileID: 114570363832932314}
+  - component: {fileID: 114385527929339242}
   m_Layer: 8
   m_Name: player
   m_TagString: Player
@@ -1617,7 +1618,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1508736174273328}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -8.43, z: -86}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4407902610175902}
@@ -2237,17 +2238,17 @@ MonoBehaviour:
   isDoubleJumping: 0
   inAirSpeed: 10
   maxInAirSpeed: 10
-  maxVelocity: 2
+  maxVelocity: 5
   minVelocity: -2
-  rollSpeed: 15
+  rollSpeed: 20
   isRolling: 0
   rollduration: 0.5
   isMoving: 0
   canMove: 1
-  walkSpeed: 2
-  runSpeed: 8
+  walkSpeed: 3
+  runSpeed: 10
   inputVec: {x: 0, y: 0, z: 0}
-  weapon: 0
+  weapon: 7
   rightWeapon: 0
   leftWeapon: 0
   isRelax: 0
@@ -2263,8 +2264,8 @@ MonoBehaviour:
   twoHandBow: {fileID: 1904809334373432}
   swordL: {fileID: 1151209913218280}
   swordR: {fileID: 1510775096530688}
-  currentKind: 0
-  animationSpeed: 1
+  currentKind: 1
+  animationSpeed: 2
 --- !u!114 &114065643725795338
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2322,10 +2323,11 @@ MonoBehaviour:
   m_unavailableTag: Player
   m_weaponAsset: 
   m_align: 0
-  _bulletTemplate: {fileID: 100000, guid: 1f64829979706394d98b1060ef20f747, type: 2}
+  _bulletTemplate: {fileID: 1672555982810128, guid: ba07bfd760614ed4d9dd21365c4548f3,
+    type: 2}
   transformToInstantiate: {fileID: 0}
-  radiusDetect: 10
-  viewAngle: 180
+  radiusDetect: 50
+  viewAngle: 360
 --- !u!114 &114364199934201596
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2346,6 +2348,18 @@ MonoBehaviour:
   Granularity: 60
   MyColor: {r: 1, g: 0, b: 0, a: 1}
   MyMaterial: {fileID: 2100000, guid: 75f756109f216ad409ff1a5ea7dd7b2c, type: 2}
+--- !u!114 &114385527929339242
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1508736174273328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 617c3a31ed0748140be586c314a6c619, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentKarma: 50
 --- !u!114 &114459391608082644
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2377,6 +2391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baa73629d83df904c8941e432feadb88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_state: 0
   _camera: {fileID: 0}
   _leftSword: {fileID: 1151209913218280}
   _rightSword: {fileID: 1510775096530688}
@@ -2386,7 +2401,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  animEnded: 0
+  isInAir: 0
 --- !u!114 &114645348321139400
 MonoBehaviour:
   m_ObjectHideFlags: 1

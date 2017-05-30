@@ -16,6 +16,11 @@ namespace Assets.Scripts.Boss.Gabriel
 
         private float startDestructionTime;
 
+        protected void Awake()
+        {
+            DontDestroyOnLoad(transform.root.gameObject);
+        }
+
         protected void Start()
         {
             startDestructionTime = CustomTimer.manager.elapsedTime;

@@ -43,6 +43,12 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		cam.position = player.position + Quaternion.identity * pivotOffset + Quaternion.identity * camOffset;
 		cam.rotation = Quaternion.identity;
 
+        if (Input.GetJoystickNames().Length == 0)
+        {
+            horizontalAimingSpeed = 600;
+            verticalAimingSpeed = 600;
+        }
+
 		// Get camera position relative to the player, used for collision test.
 		relCameraPos = transform.position - player.position;
 		relCameraPosMag = relCameraPos.magnitude - 0.5f;
@@ -61,9 +67,9 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	void LateUpdate()
 	{
         // Get mouse movement to orbit the camera.
-        if (Mathf.Abs(Input.GetAxis("CamHorizontal")) > 0.1) angleH += Mathf.Clamp(Input.GetAxis("CamHorizontal"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
+        if (Mathf.Abs(ControllerInput.manager.camHorizontal) > 0.1) angleH += Mathf.Clamp(ControllerInput.manager.camHorizontal, -1, 1) * horizontalAimingSpeed * Time.deltaTime;
 
-        if (Mathf.Abs(Input.GetAxis("CamVertical")) > 0.1) angleV += Mathf.Clamp(Input.GetAxis("CamVertical"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
+        if (Mathf.Abs(ControllerInput.manager.camVertical) > 0.1) angleV += Mathf.Clamp(ControllerInput.manager.camVertical, -1, 1) * verticalAimingSpeed * Time.deltaTime;
 
 		// Set vertical movement limit.
 		angleV = Mathf.Clamp(angleV, minVerticalAngle, targetMaxVerticalAngle);

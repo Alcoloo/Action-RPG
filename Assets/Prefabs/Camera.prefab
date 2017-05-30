@@ -26,6 +26,7 @@ GameObject:
   - component: {fileID: 114914195917962674}
   - component: {fileID: 114327176279172648}
   - component: {fileID: 114748541592278664}
+  - component: {fileID: 114932126181130018}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -120,7 +121,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1270027090587910}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 455241d876ac8b44d8a43bf97c726307, type: 3}
   m_Name: 
@@ -133,6 +134,10 @@ MonoBehaviour:
   verticalAimingSpeed: 100
   maxVerticalAngle: 20
   minVerticalAngle: -60
+  FOVFactor: 5
+  _minDistance: 0
+  _maxDistance: 0
+  currentBoss: {fileID: 0}
 --- !u!114 &114914195917962674
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -170,6 +175,19 @@ MonoBehaviour:
   blurAndFlaresShader: {fileID: 4800000, guid: be6e39cf196f146d5be72fbefb18ed75, type: 3}
   brightPassFilterShader: {fileID: 4800000, guid: 0aeaa4cb29f5d4e9c8455f04c8575c8c,
     type: 3}
+--- !u!114 &114932126181130018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1270027090587910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d83cee9c3de5c7a418bfffecfb27df34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeTexture: {fileID: 2800000, guid: 5132f8c2be355674daf8bd5f8abf09ff, type: 3}
+  fadeSpeed: 0.8
 --- !u!124 &124146587271262236
 Behaviour:
   m_ObjectHideFlags: 1

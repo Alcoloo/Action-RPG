@@ -37,7 +37,7 @@ namespace Assets.Scripts.Boss.Gabriel
             transform.Translate(Vector3.up * speed);
             if (CustomTimer.manager.isTime(startChargePower, chargePower))
             {
-                if (currentHP >= startHP - _shieldLife) Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, ALIGN.none);
+                if (currentHP >= startHP - _shieldLife) Player.instance.TakeDamage(_damage);
                 transform.position = new Vector3(transform.position.x, startYPosition, transform.position.z);
                 return TaskStatus.Success;
             }

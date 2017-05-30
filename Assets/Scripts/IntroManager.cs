@@ -9,6 +9,7 @@ public class IntroManager : MonoBehaviour {
     
     public GameObject[] introArray;
     private int currentCinematiqueIndex;
+    private IEnumerator activeCoroutine;
 
     private float switchTimer = 2.0f;
     private bool isSwitching = false;
@@ -17,23 +18,15 @@ public class IntroManager : MonoBehaviour {
 	void Start () {
         currentCinematiqueIndex = 0;
         ChangeImageAlpha();
-	}
+        activeCoroutine = SetNextOneActive();
+        StartCoroutine(activeCoroutine);
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
-        switchTimer -= Time.deltaTime;
-        if (isCinematiqueOver())
-        {
-            Debug.Log("go");
-            StopCoroutine(SetNextOneActive());
-            ScenesManager.manager.changeScene();
-        }
-        if (switchTimer <= 0.0f && !isSwitching)
-        {
-            isSwitching = true;
-            StartCoroutine(SetNextOneActive());
-        }
-	}
+        isCinematiqueOver();
+    }
 
     private void ChangeImageAlpha()
     {
@@ -45,22 +38,28 @@ public class IntroManager : MonoBehaviour {
 
     IEnumerator SetNextOneActive()
     {
-        introArray[currentCinematiqueIndex].GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false);
-        yield return new WaitForSeconds(0.5f);
+        while(currentCinematiqueIndex <= introArray.Length-1)
+        {
+            Debug.Log("a");
+            introArray[currentCinematiqueIndex].GetComponent<Image>().CrossFadeAlpha(0.0f, 2.5f, false);
+            yield return new WaitForSeconds(0.5f);
+            Debug.Log("c");
+            introArray[currentCinematiqueIndex].SetActive(false);
 
-        introArray[currentCinematiqueIndex].SetActive(false);
-        introArray[++currentCinematiqueIndex].GetComponent<Image>().CrossFadeAlpha(1.0f, 2.5f, false);
-        yield return new WaitForSeconds(0.5f);
-
-        switchTimer = 2.0f;
-        isSwitching = false;
-
-        yield return null;
+            Debug.Log("b");
+            introArray[++currentCinematiqueIndex].GetComponent<Image>().CrossFadeAlpha(1.0f, 2.5f, false);
+            yield return new WaitForSeconds(0.5f);
+            yield return null;
+        }
     }
 
-    private bool isCinematiqueOver()
+    private void isCinematiqueOver()
     {
-        if (currentCinematiqueIndex == introArray.Length -1) return true;
-        else return false;
+        if (currentCinematiqueIndex == introArray.Length -1 && !isSwitching)
+        {
+            StopCoroutine(activeCoroutine);
+            ScenesManager.manager.changeScene();
+            isSwitching = true;
+        }
     }
 }

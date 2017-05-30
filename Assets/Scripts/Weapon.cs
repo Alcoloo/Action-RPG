@@ -11,7 +11,7 @@ namespace Rpg
     /// <summary>
     ///  Classe Weapon
     /// </summary>
-    public abstract class Weapon : MonoBehaviour
+    public class Weapon : MonoBehaviour
     {
         public int currentEnnemyAimedIndex;
         
@@ -51,7 +51,7 @@ namespace Rpg
         {
 
         }
-        protected void Update()
+        protected virtual void Update()
         {
         }
         

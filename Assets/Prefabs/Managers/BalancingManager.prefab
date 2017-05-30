@@ -34,7 +34,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1708448259325366}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -547.76514, y: -596.5693, z: -218.1637}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,10 +99,10 @@ MonoBehaviour:
     m_hurtDuration: 3
     m_attackDuration: 2
   - EnemyName: EnemyWarrior
-    m_health: 80
+    m_health: 100
     m_armor: 100
     m_damage: 0
-    m_detectionRange: 20
+    m_detectionRange: 15
     m_attackDistance: 3
     m_rotationSpeed: 1
     m_attackMovementSpeed: 10
@@ -127,6 +127,28 @@ MonoBehaviour:
     m_detectionRange: 20
     m_attackDistance: 3
     m_rotationSpeed: 0
+    m_attackMovementSpeed: 10
+    m_speed: 10
+    m_hurtDuration: 3
+    m_attackDuration: 2
+  - EnemyName: Gabriel
+    m_health: 500
+    m_armor: 5
+    m_damage: 10
+    m_detectionRange: 20
+    m_attackDistance: 3
+    m_rotationSpeed: 0
+    m_attackMovementSpeed: 10
+    m_speed: 10
+    m_hurtDuration: 3
+    m_attackDuration: 2
+  - EnemyName: EnemyPopCorn(Clone)
+    m_health: 20
+    m_armor: 0
+    m_damage: 0
+    m_detectionRange: 20
+    m_attackDistance: 3
+    m_rotationSpeed: 1
     m_attackMovementSpeed: 10
     m_speed: 10
     m_hurtDuration: 3

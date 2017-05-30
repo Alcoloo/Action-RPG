@@ -19,18 +19,22 @@ namespace Rpg.GraphicElement.Weapons
         public float radiusDetect;
         public float viewAngle;
 
-        public void DoAction()
+        protected override void Update()
         {
+            base.Update();
             GetNearEnnemy();
         }
 
         public void Shoot(Quaternion rotation,Vector3 position)
         {
             // TODO lier la pool + position Bullet !
-            GameObject go = Instantiate(_bulletTemplate);
+            GameObject go = Instantiate(_bulletTemplate,transformToInstantiate); //PoolingManager.manager.getFromPool("Shoot");
             ThrowableKind currentShoot = go.GetComponent<ThrowableKind>();
-            Player.instance.transform.LookAt(EnemyManager.manager.ennemyNear[0]);
-            currentShoot.initialise(m_unavailableTag,m_damage,transform.position,transform.rotation, EnemyManager.manager.ennemyNear[0].transform.position);
+            //Player.instance.transform.LookAt(EnemyManager.manager.ennemyNear[0]);
+            go.transform.position = position;
+            go.transform.rotation = rotation;
+            currentShoot.initialise(m_unavailableTag,m_damage,new Vector3(position.x,position.y +1f,position.z),rotation /*,EnemyManager.manager.ennemyNear[0].transform.position*/);
+            Debug.Log("here");
         }
 
         private void GetNearEnnemy()

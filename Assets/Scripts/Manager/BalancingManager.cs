@@ -30,7 +30,6 @@ namespace Rpg.Manager
         [SerializeField]
         private List<EnemyTemplate> listEnemy = new List<EnemyTemplate>();
         
-
         public PlayerCarac player
         {
             get { return _player; }

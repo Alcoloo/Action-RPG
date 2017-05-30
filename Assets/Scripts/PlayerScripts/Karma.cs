@@ -34,7 +34,7 @@ namespace Rpg
 
         public void ChangeKarmaValue()
         {
-            if (Player.instance.GetComponent<WeaponController>().leftHand != null) currentKarma--;
+            if (Player.instance.currentWeapon == WEAPON.SWORDS) currentKarma--;
             else currentKarma++;
             Player.instance.ChangeKarmaValue(currentKarma);
         }

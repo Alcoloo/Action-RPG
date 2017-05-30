@@ -132,6 +132,7 @@ public class DialogueManager : MonoBehaviour {
         }
 
         coroutineIsFinish = true;
+        endDialogue.Invoke();
     }
 
     protected void OnDestroy() {

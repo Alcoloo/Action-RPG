@@ -40,6 +40,7 @@ namespace Rpg
         protected override void Awake()
         {
             base.Awake();
+            _instance = this;
             loadingCanvas = transform.Find("CanvasLoading").gameObject;
 
         }
@@ -60,7 +61,9 @@ namespace Rpg
         }
         public void reloadScene()
         {
+            Debug.Log("Reload");
             LoadNextScene(SceneManager.GetActiveScene().name);
+            //Camera.current.GetComponent<Fading>().BeginFade(-1);
         }
 
         public void LoadNextScene(string pSceneName)

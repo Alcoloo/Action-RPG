@@ -25,7 +25,6 @@ public class BasicAttack : Action
         if (_enemyScript.isOnAttackRange()) _isOnRange = true;
         else
         {
-            GetComponent<WeaponController>().activateWeaponAttack(Rpg.HAND.right, false);
             _isOnRange = false;
         }
         base.OnStart();

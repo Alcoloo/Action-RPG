@@ -19,14 +19,16 @@
 
         public BaseManager()
         {
-            onReady = new UnityEvent();
-            manager = this as T;
-            isReady = false;
+            //onReady = new UnityEvent();
+           // manager = this as T;
+            //isReady = false;
         }
 
         protected override void Awake()
         {
             base.Awake();
+            onReady = new UnityEvent();
+            manager = this as T;
             isReady = true;
             onReady.Invoke();
         }

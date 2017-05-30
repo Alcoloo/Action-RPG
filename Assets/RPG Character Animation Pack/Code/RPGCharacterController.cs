@@ -38,7 +38,6 @@ public class RPGCharacterController : MonoBehaviour
 {
 
 	#region Variables
-    private ComboManager m_combo= new ComboManager();
     private static RPGCharacterController _instance;
     public static RPGCharacterController instance { get { return _instance; } }
     //Components
@@ -397,7 +396,6 @@ public class RPGCharacterController : MonoBehaviour
 
 	public IEnumerator _Jump()
 	{
-        Player.instance.animEnded = false;
         isJumping = true;
 		animator.SetInteger("Jumping", 1);
 		animator.SetTrigger("JumpTrigger");
@@ -406,7 +404,7 @@ public class RPGCharacterController : MonoBehaviour
 		canJump = false;
 		yield return new WaitForSeconds(0.5f);
 		isJumping = false;
-        Player.instance.animEnded = true;
+        Player.instance.isInAir = true;
 	}
 	#endregion
 
@@ -473,22 +471,36 @@ public class RPGCharacterController : MonoBehaviour
     {
         int attackSide = lAttack.side;
         int attackNumber = lAttack.number;
-        rb.velocity = new Vector3(0f, 5f, 0f);
-        animator.SetTrigger("JumpAttack" + attackNumber + "Trigger");
-        if (weapon == Item.ARMED)
+        //rb.velocity = new Vector3(0f, 5f, 0f);
+        rb.constraints = RigidbodyConstraints.FreezePosition;
+        if (canAction)
         {
-            if (attackSide != 3)
+            if (weapon == Item.ARMED)
             {
-                StartCoroutine(_LockMovementAndAttack(0, 0.5f));
-                if (attackSide == 1) StartCoroutine(ActivateAttack(0.5f, HAND.left));
-                else if (attackSide == 2) StartCoroutine(ActivateAttack(0.5f, HAND.right));
+                if (!isGrounded)
+                {
+                    if (attackSide != 3)
+                    {
+                        Debug.Log("AttackJump");
+                        animator.SetTrigger("JumpAttack" + (attackNumber).ToString() + "Trigger");
+                        StartCoroutine(_LockMovementAndAttack(0, 0.4f));
+                        if (attackSide == 1) StartCoroutine(ActivateAttack(0.4f, HAND.left));
+                        else if (attackSide == 2) StartCoroutine(ActivateAttack(0.4f, HAND.right));
+                    }
+                    else
+                    {
+                        animator.SetTrigger("AttackDual" + (attackNumber + 1).ToString() + "Trigger");
+                        StartCoroutine(_LockMovementAndAttack(0, 0.75f));
+                    }
+                }
             }
-        }
-        else
-        {
-            StartCoroutine(_LockMovementAndAttack(0, 0.75f));
-            StartCoroutine(ShootCorou(0.5f));
-            StartCoroutine(ActivateAttack(0.5f, HAND.two_hand));
+            else
+            {
+                animator.SetTrigger("JumpAttack" + (attackNumber).ToString() + "Trigger");
+                StartCoroutine(_LockMovementAndAttack(0, 0.75f));
+                StartCoroutine(ShootCorou(0.5f));
+                StartCoroutine(ActivateAttack(0.5f, HAND.two_hand));
+            }
         }
     }
 
@@ -602,10 +614,9 @@ public class RPGCharacterController : MonoBehaviour
 	{
 		isKnockback = true;
 		StartCoroutine(_KnockbackForce(knockDirection, knockBackAmount, variableAmount));
-        //carac.setTouchable(TOUCHABLESTATE.god);
 		yield return new WaitForSeconds(.1f);
-        //carac.setTouchable(TOUCHABLESTATE.normal);
 		isKnockback = false;
+        Player.instance.SetModeNormal();
 	}
 
 	IEnumerator _KnockbackForce(Vector3 knockDirection, int knockBackAmount, int variableAmount)
@@ -624,7 +635,9 @@ public class RPGCharacterController : MonoBehaviour
 		isDead = true;
 		animator.SetBool("Moving", false);
 		inputVec = new Vector3(0, 0, 0);
-		yield return null;
+        sceneCamera.GetComponent<Fading>().BeginFade(1);
+        ScenesManager.manager.reloadScene();
+        yield return null;
 	}
 
 	public IEnumerator _Revive()
@@ -732,6 +745,7 @@ public class RPGCharacterController : MonoBehaviour
     public void SetModeCinematic()
     {
         rpgCharacterState = RPGCharacterState.CINEMATIC;
+        Player.instance.SetModeCinematic();
         weapon = 0;
         animator.SetTrigger("RelaxTrigger");
         animator.SetBool("Relax", true);
@@ -740,6 +754,8 @@ public class RPGCharacterController : MonoBehaviour
     public void SetModeDefault()
     {
         rpgCharacterState = RPGCharacterState.DEFAULT;
+        weapon = Item.ARMED;
+        Player.instance.SetModeNormal();
         Sword();
     }
     #endregion
@@ -761,6 +777,8 @@ public class RPGCharacterController : MonoBehaviour
             animator.applyRootMotion = true;
         }
 		yield return new WaitForSeconds(lockTime / animationSpeed);
+        rb.constraints = RigidbodyConstraints.None;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         canAction = true;
 		canMove = true;
 		animator.applyRootMotion = false;
@@ -784,7 +802,7 @@ public class RPGCharacterController : MonoBehaviour
 
     public IEnumerator _GabrielCinematic()
     {
-        Player.instance.SetModeCinematic();
+        //Player.instance.SetModeCinematic();
         while (true)
         {
             animator.SetBool("Moving", true);

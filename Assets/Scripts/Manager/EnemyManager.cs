@@ -17,10 +17,8 @@ namespace Rpg
         public float spawnerCooldown = 45f;
         public int maxEnemyForStartSpawning = 5;
         private Transform _player;
-        public Transform player
-        {
-            get { return Player.instance.transform; }
-        }
+        public Transform player;
+        
 
     public List<Transform> ennemyNear = new List<Transform>();
         private Dictionary<String, List<GameObject>> enemies = new Dictionary<String, List<GameObject>>();
@@ -39,11 +37,14 @@ namespace Rpg
         protected override void Awake()
         {
             base.Awake();
+            player = GameObject.FindGameObjectWithTag("Player").transform;
         }
         
 
         void Start()
         {
+            Debug.Log("player");
+            _player = player;
             SpawnerEnemyPopCorn.onSpawn += InitEnemy;
         }
 
@@ -53,6 +54,8 @@ namespace Rpg
         private void InitEnemy(string pName, Vector3 pPosition, bool isLead)
         {
             GameObject lEnemy = PoolingManager.manager.getFromPool(pName);
+
+            lEnemy.GetComponent<Enemy>().player = GameObject.FindGameObjectWithTag("Player").transform;
             lEnemy.transform.position = pPosition;
             lEnemy.SetActive(true);
             lEnemy.GetComponent<BehaviorTree>().EnableBehavior();
@@ -61,7 +64,7 @@ namespace Rpg
                 popCornLead = lEnemy;
                // lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
             }
-            lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
+            lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = player;
             lEnemy.GetComponent<Enemy>().Init();
             //Debug.Log(lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().
             pushEnemy(lEnemy);
@@ -74,7 +77,7 @@ namespace Rpg
                 lEnemy.GetComponent<BehaviorTree>().EnableBehavior();
                 if (popCornLead != null)
                 {
-                    lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = lEnemy.GetComponent<EnemyPopCorn>().player.transform;
+                    lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().targetTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
                     if (lEnemy != popCornLead) lEnemy.GetComponent<BehaviorTree>().FindTask<Skirmisher>().leader = popCornLead;
                 }
@@ -94,6 +97,10 @@ namespace Rpg
             }
         }
 
+        public void removePopCorn(string pName)
+        {
+             // a voir 
+        }
         private void removeEnemy(GameObject pEnemy)
         {
             if (enemies[pEnemy.name] != null) enemies[pEnemy.name].Remove(pEnemy);
@@ -116,6 +123,14 @@ namespace Rpg
         public int getPopCornCount()
         {
             return enemies["EnemyPopCorn"].Count;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            SpawnerEnemyPopCorn.onSpawn -= InitEnemy;
+            enemies = new Dictionary<String, List<GameObject>>();
+
         }
         #endregion
     }

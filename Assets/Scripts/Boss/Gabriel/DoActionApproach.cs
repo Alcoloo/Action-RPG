@@ -26,8 +26,6 @@ namespace Assets.Scripts.Boss.Gabriel
 
         public override void OnStart()
         {
-            cara = GetComponent<Caracteristic>();
-            cara.isHit.AddListener(UpgradeHitCount);
             startPatternTime = CustomTimer.manager.elapsedTime;
         }
 
@@ -43,11 +41,6 @@ namespace Assets.Scripts.Boss.Gabriel
             else if (CustomTimer.manager.isTime(startPatternTime, _patternTime)) return TaskStatus.Success;
             else transform.position = Vector3.MoveTowards(transform.position, Player.instance.transform.position + Vector3.up, Time.deltaTime * _speed);
             return TaskStatus.Running;
-        }
-
-        private void UpgradeHitCount(int pv, int _pv2)
-        {
-            hitCount++;
         }
 
         private void DoBasicAttack()

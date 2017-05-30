@@ -8,6 +8,7 @@
     using Assets.Scripts.Boss.Gabriel;
     using Characters;
     using Manager;
+    using UnityEngine.SceneManagement;
 
     /// <summary>
     /// 
@@ -21,8 +22,6 @@
         public Text comboText;
         public Text moneyNumberTxt;
         public GameObject HudPanel;
-
-        private int _moneyFactor;
         
 
         /// <summary>
@@ -40,8 +39,8 @@
             if (Player.instance != null) Player.instance.OnAttack.AddListener(ChangeKarmaValue);
             if (Player.instance != null) Player.instance.OnDamaged.AddListener(ChangeLifeValue);
 
-            if (Gabriel.instance != null) Gabriel.instance.GetComponent<Caracteristic>().isHit.AddListener(ChangeBossLifeValue);
-            if (ComboManager.manager != null) ComboManager.manager.weaponHit.AddListener(IncreaseComboNumber);
+            if (ComboManager.manager != null) ComboManager.manager.comboUpgrade.AddListener(IncreaseComboNumber);
+            if (ComboManager.manager != null) ComboManager.manager.onComboFinish.AddListener(OnComboFinish);
         }
 
         protected void Update()
@@ -49,19 +48,24 @@
 
         }
 
-        public void OnComboFinish(int comboNumber)
+        public void ActiveSliderBoss()
         {
-            int moneyNumber = comboNumber * _moneyFactor;
-            moneyNumberTxt.text = moneyNumber.ToString();
+            bossSlider.gameObject.SetActive(true);
         }
 
-        private void IncreaseComboNumber()
+        public void OnComboFinish(int comboNumber)
         {
-            int comboNumber = ComboManager.manager.GetComboNumber();
+            int moneyNumber = comboNumber;
+            moneyNumberTxt.text = moneyNumber.ToString();
+            comboText.text = "0";
+        }
+
+        private void IncreaseComboNumber(int comboNumber)
+        {
             comboText.text = comboNumber.ToString();
         }
 
-        private void ChangeBossLifeValue(int pv, int _maxPv)
+        public void ChangeBossLifeValue(float pv)
         {
             bossSlider.value = pv;
         }
@@ -70,6 +74,7 @@
         private void ChangeKarmaValue(float karmaValue)
         {
             karmaSlider.value = karmaValue;
+            Debug.Log(karmaSlider.value);
         }
 
         private void ChangeLifeValue(float healthValue)
@@ -79,7 +84,6 @@
 
         public void ChangeHUDVisibility()
         {
-            Debug.Log(HudPanel.activeSelf);
             HudPanel.SetActive(!HudPanel.activeSelf);
         }
         

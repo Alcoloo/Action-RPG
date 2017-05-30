@@ -28,6 +28,7 @@ namespace Rpg.Manager
         {
             //StartCoroutine(expCorroutine());
             if(ComboManager.manager != null) ComboManager.manager.weaponHit.AddListener(AddComboMultiplier);
+            if(ComboManager.manager != null) ComboManager.manager.onComboFinish.AddListener(GainExp);
         }
 
         protected void Update()

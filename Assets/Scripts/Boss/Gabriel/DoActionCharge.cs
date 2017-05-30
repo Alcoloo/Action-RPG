@@ -22,27 +22,31 @@ namespace Assets.Scripts.Boss.Gabriel
         private float startHP;
         private float currentHP;
         private Caracteristic cara;
+        private Enemy _enemyScript;
 
         public override void OnStart()
         {
+            _enemyScript = GetComponent<Enemy>();
             startPowerTime = CustomTimer.manager.elapsedTime;
             hasReleasedPower = false;
-            cara = GetComponent<Caracteristic>();
-            startHP = cara.pv;
-            currentHP = startHP;
+            startHP = _enemyScript.health;
+            currentHP = _enemyScript.m_currentHealth;
+            _enemyScript.ChangeAnimationState("canalize");
         }
 
         public override TaskStatus OnUpdate()
         {
-            currentHP = cara.pv;
-            if(!hasReleasedPower)
+            if(_enemyScript != null) currentHP = _enemyScript.m_currentHealth;
+
+            if (!hasReleasedPower)
             {
                 if (CustomTimer.manager.isTime(startPowerTime, chargePowerTime))
                 {
                     Debug.Log("released Power");
                     if(gameObject.name == "Gabriel") Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.CINEMATIC;
-                    Player.instance.GetComponent<Caracteristic>().TakeDamage(_damage, ALIGN.none);
+                    Player.instance.TakeDamage(_damage);
                     hasReleasedPower = true;
+                    _enemyScript.ChangeAnimationState("run");
                     return TaskStatus.Running;
                 }
                 else if (currentHP <= startHP - _shieldLife)
@@ -60,6 +64,7 @@ namespace Assets.Scripts.Boss.Gabriel
                 {
                     Player.instance.GetComponent<RPGCharacterController>().rpgCharacterState = RPGCharacterState.DEFAULT;
                     hasReleasedPower = false;
+                    _enemyScript.ChangeAnimationState("attack");
                     return TaskStatus.Success;
                 }
                 else return TaskStatus.Running;
